@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sphy144.har"
+    namespace = "com.example.sphy144_har"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.sphy144.har"
+        applicationId = "com.example.sphy144_har"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

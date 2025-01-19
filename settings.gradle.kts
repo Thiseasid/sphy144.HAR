@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "sphy144.HAR"
+rootProject.name = "sphy144_HAR"
 include(":app")
