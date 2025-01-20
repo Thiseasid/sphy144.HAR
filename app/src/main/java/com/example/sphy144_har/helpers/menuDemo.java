@@ -73,29 +73,29 @@ public class menuDemo {
         
         Scanner keyboard = new Scanner(System.in);
         int inp = 1;
-        while (inp != 0){
-            System.out.println("\n0 Exit\n1 Current Selection\n2 Next\n3 Back\n4 Enter");
-            inp = keyboard.nextInt();
-            switch (inp){
-                case 0:
-                    break;
-                case 1:
-                    System.out.println(treeMenu.getCurrentSelectionName());
-                    break;
-                case 2:
-                    treeMenu.navigateNext();
-                    System.out.println(treeMenu.getCurrentSelectionName());
-                    break;
-                case 3:
-                    treeMenu.navigateBack();
-                    System.out.println(treeMenu.getCurrentSelectionName());
-                    break;
-                case 4:
-                    treeMenu.navigateToSelection();
-                    System.out.println(treeMenu.getCurrentSelectionName());
-                    break;
-            }
-        }
+//        while (inp != 0){
+//            System.out.println("\n0 Exit\n1 Current Selection\n2 Next\n3 Back\n4 Enter");
+//            inp = keyboard.nextInt();
+//            switch (inp){
+//                case 0:
+//                    break;
+//                case 1:
+//                    System.out.println(treeMenu.getCurrentSelectionName());
+//                    break;
+//                case 2:
+//                    treeMenu.navigateNext();
+//                    System.out.println(treeMenu.getCurrentSelectionName());
+//                    break;
+//                case 3:
+//                    treeMenu.navigateBack();
+//                    System.out.println(treeMenu.getCurrentSelectionName());
+//                    break;
+//                case 4:
+//                    treeMenu.navigateToSelection();
+//                    System.out.println(treeMenu.getCurrentSelectionName());
+//                    break;
+//            }
+//        }
             
     }
 }
