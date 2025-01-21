@@ -1,5 +1,11 @@
+/*
+ * Η εφαρομγή αυτή αναπτύχθηκε στο πλαίσιο της εκπαίδευσης
+ * στην ΣΠΗΥ στο Τμήμα Αναλυτών - Προγραμματιστών 144 ΕΣ
+ *
+ * Created on: 19 Ιαν 2025
+ * Written by SIDIROPOULOS THISEAS
+ */
 package com.example.sphy144_har.helpers;
-
 
 import java.util.Scanner;
 
