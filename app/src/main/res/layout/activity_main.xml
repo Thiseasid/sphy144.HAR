@@ -69,8 +69,8 @@
 
     <Button
         android:id="@+id/button_4720"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="204dp"
+        android:layout_height="96dp"
         android:text="PRM-4720B"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
