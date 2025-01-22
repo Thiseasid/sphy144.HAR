@@ -93,7 +93,7 @@
         android:layout_width="330dp"
         android:layout_height="229dp"
         android:src="@drawable/asirmatistis"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="73dp" />
+        tools:layout_editor_absoluteX="40dp"
+        tools:layout_editor_absoluteY="129dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
