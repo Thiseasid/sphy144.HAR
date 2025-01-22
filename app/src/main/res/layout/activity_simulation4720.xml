@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Simulation_4720">
+
+    <LinearLayout
+        android:id="@+id/layout_4720_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <FrameLayout
+            android:id="@+id/layout_4720_frame_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="54"
+            android:background="@drawable/racal_prm4720b"
+            android:scaleType="fitCenter"
+            android:weightSum="100"
+            app:layout_constraintDimensionRatio="914:250">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/button_4720_ptt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="PTT"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.3"
+                    app:layout_constraintHorizontal_bias="0.26"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.05"
+                    app:layout_constraintWidth_percent="0.3"
+                    tools:visibility="visible" />
+
+
+                <TextView
+                    android:id="@+id/textView_4720_screen"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+
+                    android:fontFamily="@font/fira_mono"
+                    android:text="PRM 4720B"
+                    android:textAlignment="center"
+                    android:textColor="#047E28"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.15"
+                    app:layout_constraintHorizontal_bias="0.548"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.613"
+                    app:layout_constraintWidth_percent="0.2" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_4720_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="46"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <FrameLayout
+                android:id="@+id/layout_4720_frame_buttons"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="70"
+                android:background="@drawable/racal_prm4720buttons"
+                android:scaleType="fitCenter"
+                android:weightSum="100">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/imageButton_4720_volume"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:background="#00FFFFFF"
+                        android:rotation="0"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.51"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315"
+                        app:srcCompat="@drawable/switch_4720_power"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton_4720_channel"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="#00FFFFFF"
+                        android:rotation="36"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.96"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315"
+                        app:srcCompat="@drawable/switch_4720_channel"
+                        tools:ignore="SpeakableTextPresentCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_4720_bottomMenu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="30"
+                android:orientation="vertical"
+                android:weightSum="100">
+
+                <Button
+                    android:id="@+id/button_4720_reserved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:text="Button Reserved" />
+
+                <Button
+                    android:id="@+id/button_4720_preset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="40"
+                    android:text="Preset" />
+
+                <Button
+                    android:id="@+id/button_4720_main_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:text="Main Menu" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
