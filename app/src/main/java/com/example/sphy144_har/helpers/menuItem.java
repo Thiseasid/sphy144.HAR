@@ -1,4 +1,16 @@
+/*
+ * Η εφαρομγή αυτή αναπτύχθηκε στο πλαίσιο της εκπαίδευσης 
+ * στην ΣΠΗΥ στο Τμήμα Αναλυτών - Προγραμματιστών 144 ΕΣ
+ * 
+ * Created on: 19 Ιαν 2025
+ * Written by SIDIROPOULOS THISEAS
+ */
 package com.example.sphy144_har.helpers;
+
+/**
+ *
+ * @author Thiseas <theseusid@gmail.com>
+ */
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +30,10 @@ public class menuItem {
     }
     public menuItem(String menuName, menuItem menuParent){
         this.menuParent = menuParent;
+        this.menuName = menuName;
+    }
+    public menuItem(String menuName, boolean isSelectable){
+        this.menuIsSelectable = isSelectable;
         this.menuName = menuName;
     }
     public menuItem(String menuName, menuItem menuParent, boolean isSelectable){

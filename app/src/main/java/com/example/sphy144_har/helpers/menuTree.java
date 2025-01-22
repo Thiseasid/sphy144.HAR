@@ -1,5 +1,16 @@
+/*
+ * Η εφαρομγή αυτή αναπτύχθηκε στο πλαίσιο της εκπαίδευσης 
+ * στην ΣΠΗΥ στο Τμήμα Αναλυτών - Προγραμματιστών 144 ΕΣ
+ * 
+ * Created on: 19 Ιαν 2025
+ * Written by SIDIROPOULOS THISEAS
+ */
 package com.example.sphy144_har.helpers;
 
+/**
+ *
+ * @author Thiseas <theseusid@gmail.com>
+ */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -10,7 +21,7 @@ public class menuTree {
     private Stack<menuItem> navigationStack;
     private List<menuItem> currentList;
     private int currentSelection = 0;
-
+    
 
     //Constractor
     public menuTree() {
@@ -36,7 +47,7 @@ public class menuTree {
     public String getCurrentMenuName() {
         return navigationStack.peek().getMenuName();
     }
-
+    
     public String getCurrentSelectionName(){
         if (!navigationStack.peek().isSelectable()){
             return navigationStack.peek().getMenuChildrenNames().get(currentSelection);
@@ -44,7 +55,7 @@ public class menuTree {
             return navigationStack.peek().getMenuName();
         }
     }
-
+    
     public menuItem getCurrentSelection(){
         if (!navigationStack.peek().isSelectable()){
             return navigationStack.peek().getMenuChildren().get(currentSelection);
@@ -52,16 +63,16 @@ public class menuTree {
             return null;
         }
     }
-
+    
     public void updateCurrentList(){
         if(!currentList.isEmpty()){
             currentList.clear();
         }
-
+        
         currentList.addAll(navigationStack.peek().getMenuChildren());
         currentSelection = 0;
     }
-
+    
 
     public void resetNavigation() {
         navigationStack.clear();
@@ -71,18 +82,18 @@ public class menuTree {
 
     public void navigateTo(menuItem menu) {
         if (this.getCurrentMenu().getMenuChildren().contains(menu)){
-            navigationStack.push(menu);
-            this.updateCurrentList();
+        navigationStack.push(menu);
+        this.updateCurrentList();
         }
     }
-
+    
     public void navigateTo(String menu) {
         if(this.getCurrentMenu().getMenuChildrenNames().contains(menu)){
             navigationStack.push(findMenuItemByNameChildren(this.getCurrentMenu(), menu));
             this.updateCurrentList();
         }
     }
-
+    
     public void navigateToSelection(){
         if (!navigationStack.peek().isSelectable()){
             navigationStack.add(navigationStack.peek().getMenuChildren().get(currentSelection));
@@ -96,7 +107,7 @@ public class menuTree {
             this.updateCurrentList();
         }
     }
-
+    
     public void navigateNext(){
         if (currentSelection >= navigationStack.peek().getMenuChildrenNames().size()-1){
             currentSelection = 0;
@@ -122,7 +133,7 @@ public class menuTree {
         }
         return null;
     }
-
+    
     public menuItem findMenuItemByNameChildren(menuItem root, String target) {
         if (root.getMenuChildren().isEmpty()){
             return null;
