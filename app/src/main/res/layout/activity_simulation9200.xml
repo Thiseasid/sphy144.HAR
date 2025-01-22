@@ -9,7 +9,7 @@
 
 
     <LinearLayout
-        android:id="@+id/layout_main"
+        android:id="@+id/layout_9200_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="100"
@@ -19,7 +19,7 @@
 
 
         <LinearLayout
-            android:id="@+id/layout_topMenu"
+            android:id="@+id/layout_9200_topMenu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="10"
@@ -59,7 +59,7 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/layout_frame_background"
+            android:id="@+id/layout_9200_frame_background"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="bottom|center_horizontal"
@@ -265,6 +265,7 @@
                             android:layout_marginTop="120dp"
                             android:background="#00FFFFFF"
                             android:rotation="-107"
+                            android:scaleType="fitCenter"
                             app:srcCompat="@drawable/switch_exact" />
 
                         <ImageButton
@@ -275,6 +276,7 @@
                             android:layout_marginTop="30dp"
                             android:background="#00FFFFFF"
                             android:visibility="visible"
+                            android:scaleType="fitCenter"
                             app:srcCompat="@drawable/switch_exact" />
 
                         <ImageButton
@@ -283,10 +285,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="185dp"
                             android:layout_marginTop="110dp"
-
                             android:background="#00FFFFFF"
                             android:rotation="-180"
                             android:visibility="visible"
+                            android:scaleType="fitCenter"
                             app:srcCompat="@drawable/switch_exact" />
 
                         <Button
