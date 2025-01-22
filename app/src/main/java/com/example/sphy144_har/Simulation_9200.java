@@ -27,27 +27,27 @@ public class Simulation_9200 extends AppCompatActivity {
     Button button_9200_1;
     Button button_9200_2;
     Button button_9200_3;
-    // Button button_9200_4 ;
-    // Button button_9200_5 ;
-    // Button button_9200_6 ;
-    // Button button_9200_7 ;
-    // Button button_9200_8 ;
-    // Button button_9200_9 ;
-    // Button button_9200_0 ;
+    Button button_9200_4;
+    Button button_9200_5;
+    Button button_9200_6;
+    Button button_9200_7;
+    Button button_9200_8;
+    Button button_9200_9;
+    Button button_9200_0;
     Button button_9200_mode;
-    // Button button_9200_auth ;
-    // Button button_9200_serv ;
-    // Button button_9200_menu ;
-    // Button button_9200_up ;
-    // Button button_9200_right ;
-    // Button button_9200_enter ;
-    // Button button_9200_hlc ;
-    // Button button_9200_light ;
-    // Button button_9200_alrt ;
-    //
-    // // Other Buttons
-    // Button button_9200_erase;
-    // Button button_9200_ptt;
+    Button button_9200_auth;
+    Button button_9200_serv;
+    Button button_9200_menu;
+    Button button_9200_up;
+    Button button_9200_right;
+    Button button_9200_enter;
+    Button button_9200_hlc;
+    Button button_9200_light;
+    Button button_9200_alrt;
+
+    // Other Buttons
+    Button button_9200_erase;
+    Button button_9200_ptt;
     ImageButton imageButton_9200_power;
     ImageButton imageButton_9200_channel;
     ImageButton imageButton_9200_volume;
@@ -71,27 +71,27 @@ public class Simulation_9200 extends AppCompatActivity {
         Button button_9200_1 = findViewById(R.id.button_9200_1);
         Button button_9200_2 = findViewById(R.id.button_9200_2);
         Button button_9200_3 = findViewById(R.id.button_9200_3);
-//    Button button_9200_4 = findViewById(R.id.button_9200_4);
-//    Button button_9200_5 = findViewById(R.id.button_9200_5);
-//    Button button_9200_6 = findViewById(R.id.button_9200_6);
-//    Button button_9200_7 = findViewById(R.id.button_9200_7);
-//    Button button_9200_8 = findViewById(R.id.button_9200_8);
-//    Button button_9200_9 = findViewById(R.id.button_9200_9);
-//    Button button_9200_0 = findViewById(R.id.button_9200_0);
-        Button button_9200_mode = findViewById(R.id.button_9200_mode);
-//    Button button_9200_auth = findViewById(R.id.button_9200_auth);
-//    Button button_9200_serv = findViewById(R.id.button_9200_serv);
-//    Button button_9200_menu = findViewById(R.id.button_9200_menu);
-//    Button button_9200_up = findViewById(R.id.button_9200_up);
-//    Button button_9200_right = findViewById(R.id.button_9200_right);
-//    Button button_9200_enter = findViewById(R.id.button_9200_enter);
-//    Button button_9200_hlc = findViewById(R.id.button_9200_hlc);
-//    Button button_9200_light = findViewById(R.id.button_9200_light);
-//    Button button_9200_alrt = findViewById(R.id.button_9200_alrt);
-//
-//    // Other Buttons
-//    Button button_9200_erase = findViewById(R.id.button_9200_erase);
-//    Button button_9200_ptt = findViewById(R.id.button_9200_ptt);
+        Button button_9200_4 = findViewById(R.id.button_9200_4);
+        Button button_9200_5 = findViewById(R.id.button_9200_5);
+        Button button_9200_6 = findViewById(R.id.button_9200_6);
+        Button button_9200_7 = findViewById(R.id.button_9200_7);
+        Button button_9200_8 = findViewById(R.id.button_9200_8);
+        Button button_9200_9 = findViewById(R.id.button_9200_9);
+        Button button_9200_0 = findViewById(R.id.button_9200_0);
+        Button button_9200_mode = findViewById(R.id.button_9200_serv);
+        Button button_9200_auth = findViewById(R.id.button_9200_auth);
+        Button button_9200_serv = findViewById(R.id.button_9200_serv);
+        Button button_9200_menu = findViewById(R.id.button_9200_menu);
+        Button button_9200_up = findViewById(R.id.button_9200_up);
+        Button button_9200_right = findViewById(R.id.button_9200_x);
+        Button button_9200_enter = findViewById(R.id.button_9200_entr);
+        Button button_9200_hlc = findViewById(R.id.button_9200_hlc);
+        Button button_9200_light = findViewById(R.id.button_9200_auth);
+        Button button_9200_alrt = findViewById(R.id.button_9200_alrt);
+
+        // Other Buttons
+        Button button_9200_erase = findViewById(R.id.button_9200_erase);
+        Button button_9200_ptt = findViewById(R.id.button_9200_ptt);
         ImageButton imageButton_9200_power = findViewById(R.id.imageButton_9200_power);
         ImageButton imageButton_9200_channel = findViewById(R.id.imageButton_9200_channel);
         ImageButton imageButton_9200_volume = findViewById(R.id.imageButton_9200_volume);
@@ -117,10 +117,8 @@ public class Simulation_9200 extends AppCompatActivity {
         });
 
 
-
-
-
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
