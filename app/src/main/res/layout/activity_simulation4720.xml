@@ -108,7 +108,7 @@
                         app:layout_constraintVertical_bias="0.1"
                         app:layout_constraintWidth_percent="0.315"
                         app:srcCompat="@drawable/switch_4720_power"
-                        tools:ignore="SpeakableTextPresentCheck" />
+                        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
                     <ImageButton
                         android:id="@+id/imageButton_4720_channel"
@@ -127,7 +127,42 @@
                         app:layout_constraintVertical_bias="0.1"
                         app:layout_constraintWidth_percent="0.315"
                         app:srcCompat="@drawable/switch_4720_channel"
-                        tools:ignore="SpeakableTextPresentCheck" />
+                        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+                    <Button
+                        android:id="@+id/button_4720_channel"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="#00FFFFFF"
+                        android:scaleType="fitCenter"
+                        android:text=""
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.96"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315" />
+
+                    <Button
+                        android:id="@+id/button_4720_volume"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="#00FFFFFF"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.51"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 
@@ -144,6 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
+                    android:backgroundTint="#4CAF50"
                     android:text="Button Reserved" />
 
                 <Button
@@ -151,6 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="40"
+                    android:backgroundTint="#4CAF50"
                     android:text="Preset" />
 
                 <Button
@@ -158,6 +195,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
+                    android:backgroundTint="#4CAF50"
                     android:text="Main Menu" />
             </LinearLayout>
 

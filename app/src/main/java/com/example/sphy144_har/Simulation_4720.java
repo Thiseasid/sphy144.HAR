@@ -11,13 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.sphy144_har.helpers.buttonStateManager;
+import com.example.sphy144_har.helpers.buttonManager4720;
+import com.example.sphy144_har.helpers.buttonManager9200;
 
 public class Simulation_4720 extends AppCompatActivity {
-
-    Button button_4720_reserved;
-    Button button_4720_preset;
-    Button button_4720_main_menu;
 
 
     @Override
@@ -26,9 +23,9 @@ public class Simulation_4720 extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_simulation4720);
 
-        Button button_4720_reserved = findViewById(R.id.button_4720_reserved);
-        Button button_4720_preset = findViewById(R.id.button_4720_preset);
-        Button button_4720_main_menu = findViewById(R.id.button_4720_main_menu);
+        buttonManager4720 buttonManager = new buttonManager4720(this);
+        buttonManager.setupButtons();
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -37,21 +34,9 @@ public class Simulation_4720 extends AppCompatActivity {
         });
 
 
-        buttonStateManager buttonPowerManager = new buttonStateManager();
-        button_4720_main_menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Simulation_4720.this, MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            }
-
-
-        });
-
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
