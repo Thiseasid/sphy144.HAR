@@ -20,7 +20,7 @@ public class menuItem {
     private String menuName;
     private menuItem menuParent = null;
     private boolean menuIsSelectable = false;
-    private boolean menuIsSelected = false;
+    private boolean menuActiveates = false;
     private List<menuItem> menuChildren = new ArrayList<>();
 
 
