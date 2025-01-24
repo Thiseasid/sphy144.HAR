@@ -61,9 +61,15 @@ public class buttonManager4720 {
 
         if (event.getAction() == MotionEvent.ACTION_UP){
             if(x<width/2){
-                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36,0,290);
+                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 0){
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36,0,288);
+                }
+
             }else{
-                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36,290,0);
+                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 288){
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36,288,0);
+                }
+
             }
         }
 
