@@ -96,7 +96,8 @@ public class Feedback extends AppCompatActivity {
         feedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean flagsubmit = false;
+                int flagsubmit = 0;
+                String [] errors={"","Συμπληρώστε το όνομά σας.","Συμπληρώστε το επίθετό σας.","Συμπληρώστε το τηλέφωνό σας.", "Μη έγκυρος αριθμός τηλεφώνου.", "Συμπληρώστε το email σας.", "Μη έγκυρη διεύθυνση email.", "Συμπληρώστε τα σχόλια σας.", "Παρακαλώ αποδεχτείτε τους όρους." };
 
                 //Mail
 
@@ -109,48 +110,38 @@ public class Feedback extends AppCompatActivity {
                 String feedbackType = spinner_feedback_type.getSelectedItem().toString();
 
                 // Ελέγχουμε αν είναι κενά
-                if (firstName.isEmpty()) {
-                    Toast.makeText(Feedback.this, "Συμπληρώστε το όνομά σας.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
-
+                if (!checkbox_consent.isChecked()) {
+                    flagsubmit = 8;
                 }
-                if (lastName.isEmpty()) {
-                    Toast.makeText(Feedback.this, "Συμπληρώστε το επίθετό σας.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
-
-                }
-                if (phone.isEmpty()) {
-                    Toast.makeText(Feedback.this, "Συμπληρώστε το τηλέφωνό σας.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
-
-                }
-                if (!TextUtils.isDigitsOnly(phone) || phone.length() != 10) {
-                    Toast.makeText(Feedback.this, "Μη έγκυρος αριθμός τηλεφώνου.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
-                }
-
-                if (emailUser.isEmpty()) {
-                    Toast.makeText(Feedback.this, "Συμπληρώστε το email σας.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
+                if (comments.isEmpty()) {
+                    flagsubmit = 7;
 
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(emailUser).matches()) {
-                    Toast.makeText(Feedback.this, "Μη έγκυρη διεύθυνση email.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
+                    flagsubmit = 6;
 
                 }
-                if (comments.isEmpty()) {
-                    Toast.makeText(Feedback.this, "Συμπληρώστε τα σχόλια σας.", Toast.LENGTH_SHORT).show();
-                    flagsubmit = true;
+                if (emailUser.isEmpty()) {
+                    flagsubmit = 5;
 
                 }
-                if (!checkbox_consent.isChecked()) {
-                    flagsubmit = true;
-                    Toast.makeText(Feedback.this, "Παρακαλώ αποδεχτείτε τους όρους.", Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isDigitsOnly(phone) || phone.length() != 10) {
+                    flagsubmit = 4;
+                }
+                if (phone.isEmpty()) {
+                    flagsubmit = 3;
+
+                }
+                if (lastName.isEmpty()) {
+                    flagsubmit = 2;
+
+                }
+                if (firstName.isEmpty()) {
+                    flagsubmit = 1;
 
                 }
 
-                if (!flagsubmit) {
+                if (flagsubmit ==0) {
                     // θέμα και κείμενο email
                     String subject = "Νέο Feedback από " + firstName + " " + lastName
                             + " [" + feedbackType + "]";
@@ -174,6 +165,8 @@ public class Feedback extends AppCompatActivity {
                     spinner_feedback_type.setVisibility(INVISIBLE);
                     checkbox_consent.setVisibility(INVISIBLE);
 
+                } else{
+                    Toast.makeText(Feedback.this, errors[flagsubmit], Toast.LENGTH_SHORT).show();
                 }
 
             }
