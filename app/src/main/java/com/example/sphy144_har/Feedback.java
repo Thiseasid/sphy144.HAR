@@ -62,7 +62,7 @@ public class Feedback extends AppCompatActivity {
 
                     // 5. Προαιρετικά, ενημέρωσε το UI μετά την επιτυχία
                     runOnUiThread(() -> {
-                        Toast.makeText(Feedback.this, "Το email στάλθηκε επιτυχώς!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Feedback.this, "Η πρόταση καταχωρήθηκε επιτυχώς!", Toast.LENGTH_SHORT).show();
                     });
 
                 } catch (Exception e) {
