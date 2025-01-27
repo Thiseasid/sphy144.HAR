@@ -46,6 +46,20 @@
                     tools:visibility="visible" />
 
 
+                <ImageView
+                    android:id="@+id/imageLight4720"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.175"
+                    app:layout_constraintHorizontal_bias="0.545"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.6"
+                    app:layout_constraintWidth_percent="0.21"
+                    app:srcCompat="@drawable/green" />
+
                 <TextView
                     android:id="@+id/textView_4720_screen"
                     android:layout_width="0dp"
@@ -54,7 +68,7 @@
                     android:fontFamily="@font/fira_mono"
                     android:text="PRM 4720B"
                     android:textAlignment="center"
-                    android:textColor="#047E28"
+                    android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +77,7 @@
                     app:layout_constraintHorizontal_bias="0.548"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.613"
+                    app:layout_constraintVertical_bias="0.605"
                     app:layout_constraintWidth_percent="0.2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 package com.example.sphy144_har.helpers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.ImageButton;
@@ -37,6 +38,22 @@ public class buttonManagerGlobal {
             }
         }
 
+    }
+
+    public static void showVariableValue(Context context, String variableName, String variableValue) {
+        // Create an AlertDialog.Builder instance
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        // Set the title and message of the dialog
+        builder.setTitle("Debug Information");
+        builder.setMessage(variableName + ": " + variableValue);
+
+        // Add a positive button to dismiss the dialog
+        builder.setPositiveButton("OK", null);
+
+        // Create and show the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }
