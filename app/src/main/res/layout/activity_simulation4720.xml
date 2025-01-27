@@ -46,21 +46,6 @@
                     tools:visibility="visible" />
 
 
-                <ImageView
-                    android:id="@+id/imageLight4720"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHeight_percent="0.18"
-                    app:layout_constraintHorizontal_bias="0.545"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.61"
-                    app:layout_constraintWidth_percent="0.21"
-                    app:srcCompat="@drawable/green" />
-
                 <TextView
                     android:id="@+id/textView_4720_freq"
                     android:layout_width="0dp"
@@ -232,23 +217,23 @@
 
                 <Button
                     android:id="@+id/button_4720_reserved"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
                     android:backgroundTint="#4CAF50"
                     android:text="Button Reserved" />
 
                 <Button
-                    android:id="@+id/button_4720_preset"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/button_4720_clear"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="40"
                     android:backgroundTint="#4CAF50"
-                    android:text="Preset" />
+                    android:text="Clear All Frequencies" />
 
                 <Button
                     android:id="@+id/button_4720_main_menu"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
                     android:backgroundTint="#4CAF50"
