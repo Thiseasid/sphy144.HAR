@@ -5,13 +5,15 @@ import static android.view.View.VISIBLE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-
+import android.util.Patterns;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -51,7 +53,7 @@ public class Feedback extends AppCompatActivity {
                     message.setFrom(new InternetAddress("te47st@gmail.com"));
                     // Σε ποιον παραλήπτη στέλνω (μπορείς να βάλεις όσους θέλω)
                     message.setRecipients(Message.RecipientType.TO,
-                            InternetAddress.parse("te47st@gmail.com"));
+                            InternetAddress.parse("te47st@gmail.com, alex_kar1996@hotmail.com, theseusid@gmail.com, zeppou96@gmail.com"));
 
                     // Θέμα και σώμα email
                     message.setSubject(subject);
@@ -94,28 +96,61 @@ public class Feedback extends AppCompatActivity {
         feedbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkbox_consent.isChecked()) {
-                    text_confirmation.setVisibility(VISIBLE);
-                    tv_feedback_prompt.setVisibility(INVISIBLE);
-                    etFirstName.setVisibility(INVISIBLE);
-                    etLastName.setVisibility(INVISIBLE);
-                    etPhone.setVisibility(INVISIBLE);
-                    etEmail.setVisibility(INVISIBLE);
-                    etComments.setVisibility(INVISIBLE);
-                    feedbackButton.setVisibility(INVISIBLE);
-                    spinner_feedback_type.setVisibility(INVISIBLE);
-                    checkbox_consent.setVisibility(INVISIBLE);
+                boolean flagsubmit = false;
 
-                    //Mail
+                //Mail
 
-                    // Παίρνουμε τα στοιχεία που συμπλήρωσε ο χρήστης
-                    String firstName = etFirstName.getText().toString().trim();
-                    String lastName = etLastName.getText().toString().trim();
-                    String phone = etPhone.getText().toString().trim();
-                    String emailUser = etEmail.getText().toString().trim();
-                    String comments = etComments.getText().toString().trim();
-                    String feedbackType = spinner_feedback_type.getSelectedItem().toString();
+                // Παίρνουμε τα στοιχεία που συμπλήρωσε ο χρήστης
+                String firstName = etFirstName.getText().toString().trim();
+                String lastName = etLastName.getText().toString().trim();
+                String phone = etPhone.getText().toString().trim();
+                String emailUser = etEmail.getText().toString().trim();
+                String comments = etComments.getText().toString().trim();
+                String feedbackType = spinner_feedback_type.getSelectedItem().toString();
 
+                // Ελέγχουμε αν είναι κενά
+                if (firstName.isEmpty()) {
+                    Toast.makeText(Feedback.this, "Συμπληρώστε το όνομά σας.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (lastName.isEmpty()) {
+                    Toast.makeText(Feedback.this, "Συμπληρώστε το επίθετό σας.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (phone.isEmpty()) {
+                    Toast.makeText(Feedback.this, "Συμπληρώστε το τηλέφωνό σας.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (!TextUtils.isDigitsOnly(phone) || phone.length() != 10) {
+                    Toast.makeText(Feedback.this, "Μη έγκυρος αριθμός τηλεφώνου.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+                }
+
+                if (emailUser.isEmpty()) {
+                    Toast.makeText(Feedback.this, "Συμπληρώστε το email σας.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (!Patterns.EMAIL_ADDRESS.matcher(emailUser).matches()) {
+                    Toast.makeText(Feedback.this, "Μη έγκυρη διεύθυνση email.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (comments.isEmpty()) {
+                    Toast.makeText(Feedback.this, "Συμπληρώστε τα σχόλια σας.", Toast.LENGTH_SHORT).show();
+                    flagsubmit = true;
+
+                }
+                if (!checkbox_consent.isChecked()) {
+                    flagsubmit = true;
+                    Toast.makeText(Feedback.this, "Παρακαλώ αποδεχτείτε τους όρους.", Toast.LENGTH_SHORT).show();
+
+                }
+
+                if (!flagsubmit) {
                     // θέμα και κείμενο email
                     String subject = "Νέο Feedback από " + firstName + " " + lastName
                             + " [" + feedbackType + "]";
@@ -128,8 +163,6 @@ public class Feedback extends AppCompatActivity {
 
 
                     sendEmailInBackground(subject, body);
-
-
                     text_confirmation.setVisibility(VISIBLE);
                     tv_feedback_prompt.setVisibility(INVISIBLE);
                     etFirstName.setVisibility(INVISIBLE);
@@ -141,10 +174,8 @@ public class Feedback extends AppCompatActivity {
                     spinner_feedback_type.setVisibility(INVISIBLE);
                     checkbox_consent.setVisibility(INVISIBLE);
 
-                } else {
-
-                    Toast.makeText(Feedback.this, "Παρακαλώ αποδεχτείτε τους όρους.", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }
