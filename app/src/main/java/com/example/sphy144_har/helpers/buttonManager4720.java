@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import com.example.sphy144_har.R;
 
-import java.util.Arrays;
-
 public class buttonManager4720 {
 
     private final Activity activity;
     private String mode4720 = "LISTEN";
     private int channel = 0;
+    private int channelToSave = 0;
 
-    private int[] channelFreqListen4720;
-    private int[] channelFreqTalk4720;
+
+    private int[] channelFreqListen4720 = {47000, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private int[] channelFreqTalk4720 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     private char[] digits = {' ', ' ', ' ', ' ', ' '};
     private int currentPosition = 0;
@@ -26,7 +26,7 @@ public class buttonManager4720 {
         this.activity = activity;
     }
 
-    public void setupButtons(){
+    public void setupButtons() {
 
         // Menu Buttons
         Button button_4720_reserved = activity.findViewById(R.id.button_4720_reserved);
@@ -39,116 +39,184 @@ public class buttonManager4720 {
         // Rotation Buttons
         Button button_4720_volume = activity.findViewById(R.id.button_4720_volume);
         button_4720_volume.setOnTouchListener((v, event) -> {
-            handleButton_4720_volume_Click(v,event);
+            handleButton_4720_volume_Click(v, event);
             return true;
         });
         Button button_4720_channel = activity.findViewById(R.id.button_4720_channel);
         button_4720_channel.setOnTouchListener((v, event) -> {
-            handleButton_4720_channel_Click(v,event);
+            handleButton_4720_channel_Click(v, event);
             return true;
         });
 
         // Racal Buttons
         Button button_4720_ptt = activity.findViewById(R.id.button_4720_ptt);
-        button_4720_ptt.setOnClickListener(v -> handleButton_ptt_Click(mode4720));
-    }
-
-    public void handleButton_4720_reserved_Click(){
-
-    }
-
-    public void handleButton_4720_preset_Click(){
-
-    }
-
-    public void handleButton_ptt_Click(String mode4720){
-        if (mode4720.equals("LISTEN")){
-            displayDots4720();
-        }else if (mode4720.equals("EDIT")){
-            enterDigit();
-        }
-    }
-
-    public void handleButton_4720_volume_Click(View v, MotionEvent event){
-        float x = event.getX();
-        float width = v.getWidth();
-
-        if (event.getAction() == MotionEvent.ACTION_UP){
-            if(x<width/2){
-                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 0){
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36,0,288);
+        button_4720_ptt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        handleButton_ptt_Click();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        handleButton_ptt_Release();
+                        return true;
+                    default:
+                        return false;
                 }
+            }
+        });
+    }
 
-            }else{
-                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 288){
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36,288,0);
+    public void handleButton_4720_reserved_Click() {
+        //ADD RESERVERD FUNCTION
+    }
+
+    public void handleButton_4720_preset_Click() {
+        //ADD PRESETS FUNCTION
+    }
+
+    public void handleButton_ptt_Click() { // To add PTT VOICE ON CLICK
+        if (mode4720.equals("LISTEN")) {
+            //ADD VOICE FUNCTION
+        } else {
+            if (digits[0] == ' ' && channel == channelToSave) {
+
+            } else {
+                if (currentPosition < 3) {
+                    currentPosition += 1;
+                    displayFreq4720();
+                } else if (currentPosition < 4) {
+                    switch (channel) {
+                        case 0:
+                            digits[currentPosition] = (char) ('0');
+                            digits[currentPosition + 1] = (char) ('0');
+                            break;
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                            digits[currentPosition] = (char) ('2');
+                            digits[currentPosition + 1] = (char) ('5');
+                            break;
+                        case 5:
+                            digits[currentPosition] = (char) ('5');
+                            digits[currentPosition + 1] = (char) ('0');
+                            break;
+                        default:
+                            digits[currentPosition] = (char) ('7');
+                            digits[currentPosition + 1] = (char) ('5');
+                            break;
+                    }
+                    currentPosition += 1;
+                    int newFreq = Integer.parseInt(new String(digits));
+                    if (newFreq >= 30000 && newFreq < 88000) {
+                        if (mode4720.equals("EDIT_PTR")){
+                            channelFreqListen4720[channelToSave] = newFreq;
+                        }else if (mode4720.equals("EDIT_PR")){
+                            channelFreqTalk4720[channelToSave] = newFreq;
+                        }
+                        displayFreq4720();
+                    } else {
+                        resetEdit();
+                    }
                 }
             }
         }
-        switch ((int)(activity.findViewById(R.id.imageButton_4720_volume).getRotation())){
+    }
+
+    public void handleButton_ptt_Release() { // To add PTT VOICE ON RELEASE
+        if (mode4720.equals("LISTEN")) {
+            //ADD VOICE FUNCTION
+        }
+    }
+
+    public void handleButton_4720_volume_Click(View v, MotionEvent event) {
+        float x = event.getX();
+        float width = v.getWidth();
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (x < width / 2) {
+                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 0) {
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36, 0, 288);
+                }
+
+            } else {
+                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 288) {
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36, 288, 0);
+                }
+            }
+        }
+        switch ((int) (activity.findViewById(R.id.imageButton_4720_volume).getRotation())) {
             case 0: //OFF
-                mode4720="LISTEN";
-                activity.findViewById(R.id.textView_4720_screen).setVisibility(View.INVISIBLE);
+                activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
+                activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
+                activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
                 break;
             case 36: //vol 1
             case 72: //vol 2
             case 108: //vol 3
             case 144: //vol 4
             case 180: //vol 5 *
-                mode4720="LISTEN";
-                activity.findViewById(R.id.textView_4720_screen).setVisibility(View.VISIBLE);
+                mode4720 = "LISTEN";
                 resetEdit();
-                display4720();
+                activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
+                activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
+                resetEdit();
+                displayFreq4720();
                 break;
             case 216: // PR
-                mode4720="EDIT";
+                mode4720 = "EDIT_PR";
+                channelToSave = channel;
                 resetEdit();
-                display4720();
+                displayFreq4720();
                 break;
             case 252: // PTR
-                mode4720="EDIT";
+                mode4720 = "EDIT_PTR";
+                channelToSave = channel;
                 activity.findViewById(R.id.imageLight4720).setVisibility(View.INVISIBLE);
                 resetEdit();
-                display4720();
+                displayFreq4720();
                 break;
             case 288: // LIGHT
-                mode4720="LISTEN";
+                mode4720 = "LISTEN";
                 activity.findViewById(R.id.imageLight4720).setVisibility(View.VISIBLE);
                 resetEdit();
                 break;
         }
     }
 
-        public void display4720(){
-        TextView screen = activity.findViewById(R.id.textView_4720_screen);
-        if (mode4720.equals("LISTEN")){
-            screen.setText(channelFreqListen4720[channel]);
-        }else{
-            if (digits[0] == ' '){
-                screen.setText(channelFreqListen4720[channel]);
+    public void displayFreq4720() {
+        TextView screen = activity.findViewById(R.id.textView_4720_freq);
+        if (mode4720.equals("LISTEN")) {
+            if (channelFreqListen4720[channel] > 30000) {
+                screen.setText(String.valueOf(channelFreqListen4720[channel]));
             }else{
-                digits[currentPosition] = (char)channel;
-                screen.setText(Arrays.toString(digits));
+                screen.setText("     ");
+            }
+        } else {
+            if (digits[0] == ' ') {
+                if (channelFreqListen4720[channel] > 30000) {
+                    screen.setText(String.valueOf(channelFreqListen4720[channel]));
+                }else{
+                    screen.setText("     ");
+                }
+            } else {
+                screen.setText(new String(digits));
+
+
             }
         }
     }
 
-    public void displayDots4720(){
-        TextView screen = activity.findViewById(R.id.textView_4720_screen);
-
-        if (mode4720.equals("LISTEN")){
-            char[] tempDigits = {'.', ' ',' ','.',' ',' ',' ','.'};
-            tempDigits[1] = screen.getText().charAt(0);
-            tempDigits[2] = screen.getText().charAt(1);
-            tempDigits[4] = screen.getText().charAt(2);
-            tempDigits[5] = screen.getText().charAt(3);
-            tempDigits[6] = screen.getText().charAt(4);
-            screen.setText(String.copyValueOf(tempDigits));
+    public void displayDots4720() {
+        if (mode4720.equals("LISTEN")) {
+            activity.findViewById(R.id.textView_4720_dots).setVisibility(View.VISIBLE);
         }
     }
 
-    public void resetEdit(){
-        for (int i = 0; i<5;i++){
+
+    public void resetEdit() {
+        for (int i = 0; i < 5; i++) {
             digits[i] = ' ';
         }
         currentPosition = 0;
@@ -157,23 +225,33 @@ public class buttonManager4720 {
     public void handleButton_4720_channel_Click(View v, MotionEvent event) {
         float x = event.getX();
         float width = v.getWidth();
-        if (event.getAction() == MotionEvent.ACTION_UP){
-            if(x<width/2){
-                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36,0,325);
-                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() == 0){
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (x < width / 2) {
+                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36, 0, 325);
+                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() == 0) {
                     channel = 9;
-                }else{
+                } else {
                     channel -= 1;
                 }
-            }else{
-                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36,325,0);
-                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() == 36){
+            } else {
+                buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36, 325, 0);
+                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() == 36) {
                     channel = 0;
-                }else{
+                } else {
                     channel += 1;
                 }
             }
-            // to add code for edit
+
+            TextView c = activity.findViewById(R.id.textView_4720_channel);
+            if (mode4720.equals("LISTEN")){
+                c.setText(String.valueOf(channel));
+                displayFreq4720();
+            }else{
+                c.setText(String.valueOf(channelToSave));
+                digits[currentPosition] = (char) ('0' + channel);
+                displayFreq4720();
+            }
+
         }
     }
 
