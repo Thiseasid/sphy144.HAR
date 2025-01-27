@@ -20,7 +20,7 @@ public class menuItem {
     private String menuName;
     private menuItem menuParent = null;
     private boolean menuIsSelectable = false;
-    private boolean menuIsSelected = false;
+    private boolean menuActiveates = false;
     private List<menuItem> menuChildren = new ArrayList<>();
 
 
@@ -59,8 +59,8 @@ public class menuItem {
         return menuIsSelectable;
     }
 
-    public boolean isSelected() {
-        return menuIsSelected;
+    public boolean isActive() {
+        return menuActiveates;
     }
 
     public List<String> getMenuChildrenNames() {
@@ -96,9 +96,6 @@ public class menuItem {
         this.menuIsSelectable = menuIsSelectable;
     }
 
-    public void setMenuIsSelected(boolean menuIsSelected) {
-        this.menuIsSelected = menuIsSelected;
-    }
 
     //equals
     public boolean equals(menuItem other) {

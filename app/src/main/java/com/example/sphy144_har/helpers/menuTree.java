@@ -24,8 +24,8 @@ public class menuTree {
     
 
     //Constractor
-    public menuTree() {
-        this.rootMenu = new menuItem("/", null, false);
+    public menuTree(String rootName) {
+        this.rootMenu = new menuItem(rootName, null, false);
         this.navigationStack = new Stack<>();
         this.navigationStack.add(rootMenu);
         this.currentList = new ArrayList<>();

@@ -15,7 +15,7 @@ public class menuStdCreate {
     public static menuTree createMenuTree(String menuName) {
         switch (menuName) {
             case "HLG":
-                menuTree treeMenuHLG = new menuTree();
+                menuTree treeMenuHLG = new menuTree("HLG");
                 treeMenuHLG.addMenuItem("/", new menuItem("CONSULT"));
                 treeMenuHLG.addMenuItem("/", new menuItem("INIT"));
                 treeMenuHLG.addMenuItem("/", new menuItem("MAN PREP"));
@@ -31,7 +31,7 @@ public class menuStdCreate {
                 treeMenuHLG.addMenuItem("Z TIME", new menuItem("SEC"));
                 return treeMenuHLG;
             case "FHOP":
-                menuTree treeMenuFHOP = new menuTree();
+                menuTree treeMenuFHOP = new menuTree("FHOP");
                 treeMenuFHOP.addMenuItem("/", new menuItem("CONSULT"));
                 treeMenuFHOP.addMenuItem("/", new menuItem("INIT"));
                 treeMenuFHOP.addMenuItem("/", new menuItem("MAN PREP"));
@@ -97,7 +97,7 @@ public class menuStdCreate {
                 treeMenuFHOP.addMenuItem("SYNCHRO", new menuItem("TSCAN"));
                 return treeMenuFHOP;
             case "SERV":
-                menuTree servTree = new menuTree();
+                menuTree servTree = new menuTree("SERV");
                 servTree.addMenuItem("/", new menuItem("LEVEL"));
                 servTree.addMenuItem("LEVEL", new menuItem("SUB", true));
                 servTree.addMenuItem("LEVEL", new menuItem("NSC", true));
@@ -128,15 +128,15 @@ public class menuStdCreate {
                 servTree.addMenuItem("DT TYPE", new menuItem("EXT VOC", true));
                 return servTree;
             case "AUTH":
-                menuTree authTree = new menuTree();
+                menuTree authTree = new menuTree("AUTH");
                 authTree.addMenuItem("/", new menuItem("AUTH"));
                 return authTree;
             case "ALRT":
-                menuTree alrtTree = new menuTree();
+                menuTree alrtTree = new menuTree("ALRT");
                 alrtTree.addMenuItem("/", new menuItem("ALRT"));
                 return alrtTree;
             case "MODE":
-                menuTree modeTree = new menuTree();
+                menuTree modeTree = new menuTree("MODE");
                 modeTree.addMenuItem("/", new menuItem("PROGRAM"));
                 modeTree.addMenuItem("PROGRAM", new menuItem("FHOP", true));
                 modeTree.addMenuItem("PROGRAM", new menuItem("ORTHO", true));
@@ -147,7 +147,7 @@ public class menuStdCreate {
                 modeTree.addMenuItem("PROGRAM", new menuItem("SCANNING", true));
                 return modeTree;
             case "IDLE":
-                menuTree idleTree = new menuTree();
+                menuTree idleTree = new menuTree("IDLE");
                 idleTree.addMenuItem("/", new menuItem("FHOP"));
                 return idleTree;
             default:
