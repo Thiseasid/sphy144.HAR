@@ -1,14 +1,12 @@
 package com.example.sphy144_har;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +15,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sphy144_har.helpers.buttonManagerMainMenu;
-import com.example.sphy144_har.helpers.firebaseHelper;
+import com.example.sphy144_har.helpers.FirebaseHelper;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
-    private firebaseHelper firebaseHelper;
+    private FirebaseHelper firebaseHelper;
     // TEST AUDIO SEND
     //_ TEST AUDIO SEND
     //__ TEST AUDIO SEND
@@ -57,21 +57,17 @@ public class MainActivity extends AppCompatActivity {
         buttonManagerMainMenu buttonManager = new buttonManagerMainMenu(this);
         buttonManager.setupButtons();
 
-
-        //__ TEST AUDIO SEND
-        //_ TEST AUDIO SEND
-        // TEST AUDIO SEND
-
-        // Request RECORD_AUDIO permission
+// Request RECORD_AUDIO permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
 
-        firebaseHelper = new firebaseHelper();
+        firebaseHelper = new FirebaseHelper(this);
         firebaseHelper.signInAnonymously();  // Sign in anonymously
         Button recordButton = findViewById(R.id.button_Recording);
+        Button button_Play = findViewById(R.id.button_Recording);
 
         recordButton.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
@@ -85,15 +81,29 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        button_Play.setOnClickListener(v -> handleButton_Play_Click());
+        //firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+        //__ TEST AUDIO SEND
+        //_ TEST AUDIO SEND
+        // TEST AUDIO SEND
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private void startRecording() {
         try {
             audioFilePath = getExternalFilesDir(null).getAbsolutePath() + "/audio.3gp"; // Set file path
 
             mediaRecorder = new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mediaRecorder.setAudioEncodingBitRate(128000);
             mediaRecorder.setOutputFile(audioFilePath);
             mediaRecorder.prepare();
             mediaRecorder.start();
@@ -136,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
         return Base64.encodeToString(bytesArray, Base64.DEFAULT);
     }
 
+    public void handleButton_Play_Click(){
+
+    }
 
         // TEST AUDIO SEND
         //_ TEST AUDIO SEND

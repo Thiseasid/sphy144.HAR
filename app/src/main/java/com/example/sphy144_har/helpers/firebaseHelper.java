@@ -1,6 +1,8 @@
 package com.example.sphy144_har.helpers;
 
+import android.app.Activity;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
@@ -18,17 +20,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class firebaseHelper {
+public class FirebaseHelper {
 
+    // Initialize Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference database;
     private static final String TAG = "FirebaseHelper";
-    private int clientsCount = 2; // 🔹 Change this to match the number of clients
+    private int clientsCount = 10; // 🔹 Change this to match the number of clients
+
+    private final Activity activity;
 
     // Constructor
-    public firebaseHelper() {
+    public FirebaseHelper(Activity activity) {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
+        this.activity = activity;
     }
 
     public void signInAnonymously() {
@@ -53,12 +59,24 @@ public class firebaseHelper {
 
             database.child("messages").child(userId).child(messageId).setValue(audioMessageData)
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Audio message sent successfully!");
-                        } else {
-                            Log.e(TAG, "Audio message send failed", task.getException());
-                        }
-                    });
+                        // Data added successfully, now schedule deletion
+                        new Handler().postDelayed(() -> {
+                            // Delete the data after 10 seconds
+                            database.child("messages").child(userId).child(messageId).removeValue()
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        // Deletion succeeded
+                                        Log.d("YourActivity", "Data deleted successfully.");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Deletion failed
+                                        Log.e("YourActivity", "Data deletion failed.", e);
+                                    });
+                        }, 10000); // 10,000 milliseconds = 10 seconds
+                    }).addOnFailureListener(e -> {
+                        // Data addition failed
+                        Log.e("YourActivity", "Data addition failed.", e);
+                    });;
+
         }
     }
 
@@ -72,15 +90,15 @@ public class firebaseHelper {
                     String base64Audio = messageSnapshot.child("audio").getValue(String.class);
 
                     if (base64Audio != null) {
+                        updateDownloadCounter(userId, messageId);
                         playReceivedAudio(base64Audio);
-                        updateDownloadCount(userId, messageId);
                     }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e(TAG, "Error receiving messages: " + error.getMessage());
+                buttonManagerGlobal.showVariableValue(activity, "ERROR","Cancelled Download audio");
             }
         });
     }
@@ -100,28 +118,32 @@ public class firebaseHelper {
             mediaPlayer.prepare();
             mediaPlayer.start();
 
-            Log.d(TAG, "Playing received audio...");
+            mediaPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+                audioFile.delete();
+            });
+
         } catch (IOException e) {
-            Log.e(TAG, "Error playing received audio", e);
+            buttonManagerGlobal.showVariableValue(activity, "ERROR","Playing audio");
         }
     }
 
     // 🔹 Keep track of downloads and delete after all clients received
-    private void updateDownloadCount(String userId, String messageId) {
+    private void updateDownloadCounter(String userId, String messageId) {
         DatabaseReference messageRef = database.child("messages").child(userId).child(messageId);
 
         messageRef.child("downloads").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Integer currentCount = task.getResult().getValue(Integer.class);
-                if (currentCount == null) currentCount = 0;
+                Integer downloads = task.getResult().getValue(Integer.class);
+                if (downloads == null) downloads = 0;
 
-                int newCount = currentCount + 1;
+                int newCount = downloads + 1;
                 messageRef.child("downloads").setValue(newCount);
 
-                if (newCount >= clientsCount) {
-                    messageRef.removeValue();
-                    Log.d(TAG, "Message deleted after all clients downloaded");
-                }
+//                if (newCount >= clientsCount) {
+//                    messageRef.removeValue();
+//                    Log.d(TAG, "Message deleted after all clients downloaded");
+//                }
             }
         });
     }
