@@ -2,12 +2,11 @@ package com.example.sphy144_har.helpers;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -15,92 +14,166 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 public class FirebaseHelper {
-
-    // Initialize Firebase
+    // ____________________________ Variables ____________________________
     private FirebaseAuth mAuth;
     private DatabaseReference database;
-    private static final String TAG = "FirebaseHelper";
-    private int clientsCount = 10; // 🔹 Change this to match the number of clients
-
+    private ValueEventListener audioListener;
+    private String audioFilePath;
+    private MediaRecorder mediaRecorder;
+    private String radioType;
+    private Queue<DatabaseReference> toDeleteMessages = new LinkedList<>();
     private final Activity activity;
 
-    // Constructor
-    public FirebaseHelper(Activity activity) {
+    // ____________________________ Constructor ____________________________
+    public FirebaseHelper(Activity activity, String radioType) {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
+        this.radioType = radioType;
         this.activity = activity;
     }
 
+    // ____________________________ Getters ____________________________
+    public String getUserId() {
+        if (mAuth.getCurrentUser() != null) {
+            return mAuth.getCurrentUser().getUid();
+        }
+        return null;
+    }
+
+    public Queue getToDeleteMessages(){
+        return toDeleteMessages;
+    }
+
+    public MediaRecorder getMediaRecorder(){
+        return mediaRecorder;
+    }
+
+    // ____________________________ Connect to Firebase ____________________________
     public void signInAnonymously() {
         mAuth.signInAnonymously()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Log.d(TAG, "User signed in: " + user.getUid());
+                        buttonManagerGlobal.showVariableValue(activity, "INFO","Connection to Database Successful");
                     } else {
-                        Log.e(TAG, "signInAnonymously: failure", task.getException());
+                        buttonManagerGlobal.showVariableValue(activity, "WARN","Connection to Database Failed");
                     }
                 });
     }
 
+    public void startRecording() {
+        try {
+            audioFilePath = activity.getExternalFilesDir(null).getAbsolutePath() + "/audio.3gp"; // Set file path
+
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mediaRecorder.setAudioEncodingBitRate(128000);
+            mediaRecorder.setOutputFile(audioFilePath);
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            buttonManagerGlobal.showVariableValue(activity, "ERROR", "Error starting recording");
+        }
+    }
+
+    // Stop recording and send the audio as Base64 to Firebase
+    public void stopRecordingAndSend() {
+        if (mediaRecorder != null) {
+            try {
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+            } catch (RuntimeException e) {
+                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Could not stop Recording");
+            }
+
+            try {
+                // Convert the audio file to Base64
+                String base64Audio = convertAudioToBase64(audioFilePath);
+                String userId = getUserId(); // Get the Firebase user ID
+                sendAudioMessage(userId, base64Audio);  // Send to Firebase
+            } catch (IOException e) {
+                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Error encoding audio to Base64");
+            }
+        }
+    }
+
+    // Convert audio file to Base64 string
+    private String convertAudioToBase64(String filePath) throws IOException {
+        File file = new File(filePath);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] bytesArray = new byte[(int) file.length()];
+        fileInputStream.read(bytesArray);
+        fileInputStream.close();
+        return Base64.encodeToString(bytesArray, Base64.DEFAULT);
+    }
+
     // Send an audio message as Base64 encoded string
     public void sendAudioMessage(String userId, String base64Audio) {
-        String messageId = database.child("messages").child(userId).push().getKey();
+        String messageId = database.child("messages").child(radioType).push().getKey();
+        DatabaseReference message = database.child("messages").child(radioType).child(messageId);
         if (messageId != null) {
             Map<String, Object> audioMessageData = new HashMap<>();
             audioMessageData.put("audio", base64Audio);  // Store the Base64 audio
             audioMessageData.put("timestamp", System.currentTimeMillis());
+            audioMessageData.put("downloads", 0);
+            Map<String, Boolean> clients = new HashMap<>();
+            clients.put(userId,false);
+            audioMessageData.put("clients", clients);
 
-            database.child("messages").child(userId).child(messageId).setValue(audioMessageData)
+            message.setValue(audioMessageData)
                     .addOnCompleteListener(task -> {
                         // Data added successfully, now schedule deletion
+                        toDeleteMessages.add(message);
                         new Handler().postDelayed(() -> {
-                            // Delete the data after 10 seconds
-                            database.child("messages").child(userId).child(messageId).removeValue()
-                                    .addOnSuccessListener(aVoid1 -> {
-                                        // Deletion succeeded
-                                        Log.d("YourActivity", "Data deleted successfully.");
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Deletion failed
-                                        Log.e("YourActivity", "Data deletion failed.", e);
-                                    });
+                            message.removeValue();
                         }, 10000); // 10,000 milliseconds = 10 seconds
-                    }).addOnFailureListener(e -> {
-                        // Data addition failed
-                        Log.e("YourActivity", "Data addition failed.", e);
-                    });;
-
+                        toDeleteMessages.poll();
+                    });
         }
     }
 
     // Listen for new messages and play them
     public void listenForAudioMessages(String userId) {
-        database.child("messages").child(userId).addValueEventListener(new ValueEventListener() {
+        DatabaseReference userMessagesRef = database.child("messages").child(radioType);
+
+        audioListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
                     String messageId = messageSnapshot.getKey();
                     String base64Audio = messageSnapshot.child("audio").getValue(String.class);
+                    Map<String, Boolean> clients = (Map<String, Boolean>) messageSnapshot.child("clients").getValue();
 
-                    if (base64Audio != null) {
-                        updateDownloadCounter(userId, messageId);
+                    if(!clients.containsKey(userId)){
+                        database.child("messages").child(radioType).child(messageId).child("clients").child(userId).setValue(false);
+                    }
+                    if (base64Audio != null && clients != null && !clients.get(userId)) {
                         playReceivedAudio(base64Audio);
+                        updateDownloadCount(userId, messageId);
+                        clients.put(userId, true);
+                        database.child("messages").child(radioType).child(messageId).child("clients").setValue(clients);
                     }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                buttonManagerGlobal.showVariableValue(activity, "ERROR","Cancelled Download audio");
+                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Listening audio");
             }
-        });
+        };
+        // Attach the listener
+        userMessagesRef.addValueEventListener(audioListener);
     }
 
     // Convert Base64 to audio file and play it
@@ -109,6 +182,7 @@ public class FirebaseHelper {
             byte[] decodedBytes = Base64.decode(base64Audio, Base64.DEFAULT);
             File audioFile = File.createTempFile("received_audio", ".3gp");
 
+            // NECESSARY! to write to a file for normal playback
             FileOutputStream fos = new FileOutputStream(audioFile);
             fos.write(decodedBytes);
             fos.close();
@@ -120,39 +194,36 @@ public class FirebaseHelper {
 
             mediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
-                audioFile.delete();
+//                audioFile.delete(); //Leave last audio in place
             });
 
         } catch (IOException e) {
-            buttonManagerGlobal.showVariableValue(activity, "ERROR","Playing audio");
+            buttonManagerGlobal.showVariableValue(activity, "ERROR","Failed to Play audio");
         }
     }
 
-    // 🔹 Keep track of downloads and delete after all clients received
-    private void updateDownloadCounter(String userId, String messageId) {
-        DatabaseReference messageRef = database.child("messages").child(userId).child(messageId);
+    // Update downloads for Debugging
+    private void updateDownloadCount(String userId, String messageId) {
+        DatabaseReference messageRef = database.child("messages").child(radioType).child(messageId);
 
         messageRef.child("downloads").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Integer downloads = task.getResult().getValue(Integer.class);
-                if (downloads == null) downloads = 0;
-
-                int newCount = downloads + 1;
-                messageRef.child("downloads").setValue(newCount);
-
-//                if (newCount >= clientsCount) {
-//                    messageRef.removeValue();
-//                    Log.d(TAG, "Message deleted after all clients downloaded");
-//                }
+                if (downloads == null) {
+                    downloads = 0;
+                }
+                messageRef.child("downloads").setValue(downloads + 1);
             }
         });
     }
 
-    // Get user ID
-    public String getUserId() {
-        if (mAuth.getCurrentUser() != null) {
-            return mAuth.getCurrentUser().getUid();
+    // For OnDestroy Remove all Listeners
+    public void removeAudioListener() {
+        DatabaseReference userMessagesRef = database.child("messages").child(radioType);
+        if (audioListener != null) {
+            userMessagesRef.removeEventListener(audioListener);
+            audioListener = null;
         }
-        return null;
     }
+
 }
