@@ -35,6 +35,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:backgroundTint="#00FFFFFF"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_percent="0.3"
@@ -217,12 +218,12 @@
                 android:weightSum="100">
 
                 <Button
-                    android:id="@+id/button_4720_reserved"
+                    android:id="@+id/button_4720_ConnectionStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
                     android:backgroundTint="#4CAF50"
-                    android:text="Button Reserved" />
+                    android:text="Status : Connected " />
 
                 <Button
                     android:id="@+id/button_4720_clear"

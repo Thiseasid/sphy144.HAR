@@ -1,7 +1,6 @@
 package com.example.sphy144_har.helpers;
 
 import android.app.Activity;
-import android.media.MediaRecorder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,17 +24,16 @@ public class buttonManager4720 {
     private char[] digits = {' ', ' ', ' ', ' ', ' '};
     private int currentPosition = 0;
 
-    public buttonManager4720(Activity activity) {
+    public buttonManager4720(Activity activity,FirebaseHelper firebaseHelper) {
         this.activity = activity;
-        firebaseHelper = new FirebaseHelper(this.activity, "4720");
-        firebaseHelper.signInAnonymously();  // Sign in anonymously
+        this.firebaseHelper = firebaseHelper;
     }
 
     public void setupButtons() {
 
         // Menu Buttons
-        Button button_4720_reserved = activity.findViewById(R.id.button_4720_reserved);
-        button_4720_reserved.setOnClickListener(v -> handleButton_4720_reserved_Click());
+        Button button_4720_ConnectionStatus = activity.findViewById(R.id.button_4720_ConnectionStatus);
+        button_4720_ConnectionStatus.setOnClickListener(v -> handleButton_4720_ConnectionStatus_Click());
         Button button_4720_preset = activity.findViewById(R.id.button_4720_clear);
         button_4720_preset.setOnClickListener(v -> handleButton_4720_clear_Click());
         Button button_4720_main_menu = activity.findViewById(R.id.button_4720_main_menu);
@@ -72,8 +70,15 @@ public class buttonManager4720 {
         });
     }
 
-    public void handleButton_4720_reserved_Click() {
+    public void handleButton_4720_ConnectionStatus_Click() {
         //ADD RESERVERD FUNCTION
+        if (mode4720.equals("LISTEN")) {
+            buttonManagerGlobal.showVariableValue(activity,"Listening",firebaseHelper.getFreqLoad());
+        } else{
+            buttonManagerGlobal.showVariableValue(activity,"Listening","Currently in Edit Mode");
+        }
+
+
     }
 
     public void handleButton_4720_clear_Click() {
@@ -82,6 +87,7 @@ public class buttonManager4720 {
             channelFreqListen4720[i] = 0;
             channelFreqTalk4720[i] = 0;
         }
+        firebaseHelper.stopListeningForAudioMessages();
         displayFreqListen4720();
     }
 
@@ -125,6 +131,7 @@ public class buttonManager4720 {
             displayFreqListen4720();
             undisplayDots4720();
             //ADD VOICE FUNCTION
+            firebaseHelper.setFreqSave(String.valueOf(channelFreqTalk4720[channel]));
             firebaseHelper.stopRecordingAndSend();
         }
     }
@@ -132,25 +139,27 @@ public class buttonManager4720 {
     public void handleButton_4720_volume_Click(View v, MotionEvent event) {
         float x = event.getX();
         float width = v.getWidth();
+        float rotation = activity.findViewById(R.id.imageButton_4720_volume).getRotation();
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (x < width / 2) {
-                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 0) {
+                if (rotation != 0) {
                     buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36, 0, 288);
                 }
 
             } else {
-                if (activity.findViewById(R.id.imageButton_4720_volume).getRotation() != 288) {
+                if (rotation != 288) {
                     buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36, 288, 0);
                 }
             }
         }
 
-        switch ((int) (activity.findViewById(R.id.imageButton_4720_volume).getRotation())) {
+        switch ((int) (rotation)) {
             case 0: //OFF
                 activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
                 activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
                 activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
                 activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
+                firebaseHelper.stopListeningForAudioMessages();
                 break;
             case 36: //vol 1
             case 72: //vol 2
@@ -158,19 +167,24 @@ public class buttonManager4720 {
             case 144: //vol 4
             case 180: //vol 5 *
                 mode4720 = "LISTEN";
+                firebaseHelper.stopListeningForAudioMessages();
+                firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
                 activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
                 activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
                 activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
                 break;
             case 216: // PR
                 mode4720 = "EDIT_PR";
+                firebaseHelper.stopListeningForAudioMessages();
                 break;
             case 252: // PTR
                 mode4720 = "EDIT_PTR";
+                firebaseHelper.stopListeningForAudioMessages();
                 activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
                 break;
             case 288: // LIGHT
                 mode4720 = "LISTEN";
+                firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
                 activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_light));
                 break;
         }
@@ -236,7 +250,9 @@ public class buttonManager4720 {
                     channel += 1;
                 }
             }
-
+            firebaseHelper.setFreqSave(String.valueOf(channelFreqTalk4720[channel]));
+            firebaseHelper.setFreqLoad(String.valueOf(channelFreqListen4720[channel]));
+            firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
             if (mode4720.equals("LISTEN")) {
                 displayChannel(channel);
             } else {

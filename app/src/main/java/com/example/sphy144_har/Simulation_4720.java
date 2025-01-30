@@ -19,17 +19,18 @@ import java.util.Queue;
 public class Simulation_4720 extends AppCompatActivity {
 
     private FirebaseHelper firebaseHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_simulation4720);
 
-        buttonManager4720 buttonManager = new buttonManager4720(this);
+
+        firebaseHelper = new FirebaseHelper(this,"4720");
+        firebaseHelper.signInAnonymously();  // Sign in anonymously
+        buttonManager4720 buttonManager = new buttonManager4720(this,firebaseHelper);
         buttonManager.setupButtons();
-        firebaseHelper = new FirebaseHelper(this, "4720");
-        firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
