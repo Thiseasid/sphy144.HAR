@@ -11,18 +11,19 @@
 
     <TextView
         android:id="@+id/textTitle"
-        android:layout_width="369dp"
-        android:layout_height="54dp"
+        android:layout_width="338dp"
+        android:layout_height="53dp"
         android:fontFamily="sans-serif-black"
         android:text="Hellenic Army Radios"
+        android:textAlignment="center"
         android:textColor="#100F0F"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.809"
+        app:layout_constraintHorizontal_bias="0.43"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.028" />
+        app:layout_constraintVertical_bias="0.042" />
 
     <Button
         android:id="@+id/button_9200"
@@ -70,10 +71,10 @@
         android:text="Feedback"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintHorizontal_bias="0.934"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.696" />
+        app:layout_constraintVertical_bias="0.699" />
 
     <Button
         android:id="@+id/button_4720"
@@ -93,7 +94,11 @@
         android:layout_width="330dp"
         android:layout_height="229dp"
         android:src="@drawable/asirmatistis"
-        tools:layout_editor_absoluteX="40dp"
-        tools:layout_editor_absoluteY="129dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.199" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
+                android:backgroundTint="#4CAF50"
                 android:text="Insert FillGun" />
 
             <Button
@@ -40,6 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
+                android:backgroundTint="#4CAF50"
                 android:text="Button Reserved" />
 
             <Button
@@ -47,6 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
+                android:backgroundTint="#4CAF50"
                 android:text="Preset" />
 
             <Button
@@ -54,6 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
+                android:backgroundTint="#4CAF50"
                 android:text="Main Menu" />
 
         </LinearLayout>
@@ -114,39 +118,39 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Mode"
-                                android:visibility="visible" />
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_1"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button" />
+                                android:text=""
+                                android:visibility="invisible"  />
 
                             <Button
                                 android:id="@+id/button_9200_2"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_3"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_light"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
 
                         </LinearLayout>
@@ -163,39 +167,40 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Mode"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_4"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button" />
+                                android:text=""
+                                android:visibility="invisible"/>
 
                             <Button
                                 android:id="@+id/button_9200_5"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_6"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_alrt"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -210,23 +215,24 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Mode"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_7"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button" />
+                                android:text="Button"
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_8"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_9"
@@ -234,15 +240,15 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
                                 android:text="Button"
-                                android:visibility="visible" />
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_hlc"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -257,39 +263,40 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Mode"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_up"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button" />
+                                android:text="invisible"
+                                android:visibility="invisible"/>
 
                             <Button
                                 android:id="@+id/button_9200_0"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_x"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text="invisible"
+                                android:visibility="invisible" />
 
                             <Button
                                 android:id="@+id/button_9200_entr"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="20"
-                                android:text="Button"
-                                android:visibility="visible" />
+                                android:text=""
+                                android:visibility="invisible" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -359,7 +366,8 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="25"
-                            android:text="Erase" />
+                            android:text=""
+                            android:visibility="invisible"                            />
 
                     </LinearLayout>
 
@@ -393,12 +401,13 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:background="#00FFFFFF"
+                            android:rotation="-35"
                             android:scaleType="fitCenter"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHeight_percent="0.28"
 
+                            app:layout_constraintHeight_percent="0.28"
                             app:layout_constraintHorizontal_bias="0.278"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -431,7 +440,8 @@
                             android:id="@+id/button_9200_ptt"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:text="PTT"
+                            android:text=""
+                            android:visibility="invisible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHeight_percent="0.4"

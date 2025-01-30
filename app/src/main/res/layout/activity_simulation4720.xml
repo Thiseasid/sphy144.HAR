@@ -34,7 +34,7 @@
                     android:id="@+id/button_4720_ptt"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:text="PTT"
+                    android:backgroundTint="#00FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_percent="0.3"
@@ -47,23 +47,63 @@
 
 
                 <TextView
-                    android:id="@+id/textView_4720_screen"
+                    android:id="@+id/textView_4720_freq"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-
                     android:fontFamily="@font/fira_mono"
-                    android:text="PRM 4720B"
+                    android:text="47000"
                     android:textAlignment="center"
-                    android:textColor="#047E28"
-                    android:textSize="24sp"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
                     android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.15"
+                    app:layout_constraintHorizontal_bias="0.58"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.605"
+                    app:layout_constraintWidth_percent="0.2" />
+
+                <TextView
+                    android:id="@+id/textView_4720_channel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/fira_mono"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.15"
+                    app:layout_constraintHorizontal_bias="0.470"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.605"
+                    app:layout_constraintWidth_percent="0.05" />
+
+                <TextView
+                    android:id="@+id/textView_4720_dots"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/fira_mono"
+                    android:text=".  .   .  ."
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_percent="0.15"
                     app:layout_constraintHorizontal_bias="0.548"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.613"
+                    app:layout_constraintVertical_bias="0.65"
                     app:layout_constraintWidth_percent="0.2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,7 +148,7 @@
                         app:layout_constraintVertical_bias="0.1"
                         app:layout_constraintWidth_percent="0.315"
                         app:srcCompat="@drawable/switch_4720_power"
-                        tools:ignore="SpeakableTextPresentCheck" />
+                        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
                     <ImageButton
                         android:id="@+id/imageButton_4720_channel"
@@ -127,7 +167,44 @@
                         app:layout_constraintVertical_bias="0.1"
                         app:layout_constraintWidth_percent="0.315"
                         app:srcCompat="@drawable/switch_4720_channel"
-                        tools:ignore="SpeakableTextPresentCheck" />
+                        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+                    <Button
+                        android:id="@+id/button_4720_channel"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="#00FFFFFF"
+                        android:rotation="0"
+                        android:scaleType="fitCenter"
+                        android:text=""
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.96"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315" />
+
+                    <Button
+                        android:id="@+id/button_4720_volume"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="#00FFFFFF"
+                        android:rotation="0"
+                        android:scaleType="fitCenter"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.91"
+                        app:layout_constraintHorizontal_bias="0.51"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.1"
+                        app:layout_constraintWidth_percent="0.315" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 
@@ -141,23 +218,26 @@
 
                 <Button
                     android:id="@+id/button_4720_reserved"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
+                    android:backgroundTint="#4CAF50"
                     android:text="Button Reserved" />
 
                 <Button
-                    android:id="@+id/button_4720_preset"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/button_4720_clear"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="40"
-                    android:text="Preset" />
+                    android:backgroundTint="#4CAF50"
+                    android:text="Clear All Frequencies" />
 
                 <Button
                     android:id="@+id/button_4720_main_menu"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
+                    android:backgroundTint="#4CAF50"
                     android:text="Main Menu" />
             </LinearLayout>
 

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">sphy144_HAR</string>
+    <string-array name="feedback_options">
+        <item>Γενικές προτάσεις</item>
+        <item>Σφάλματα εφαρμογής</item>
+        <item>Νέες λειτουργίες</item>
+    </string-array>
 </resources>
