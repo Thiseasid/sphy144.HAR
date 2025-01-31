@@ -19,22 +19,23 @@
         <activity
             android:name=".Simulation_4720"
             android:exported="false"
-            android:screenOrientation="landscape"
-            tools:ignore="DiscouragedApi" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Study"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Feedback"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".Simulation_9200"
-            android:exported="false"
             android:screenOrientation="landscape"
-            tools:ignore="DiscouragedApi" />
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

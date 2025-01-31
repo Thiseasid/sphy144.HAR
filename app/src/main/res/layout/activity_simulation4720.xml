@@ -173,6 +173,70 @@
                         app:srcCompat="@drawable/switch_4720_channel"
                         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
+                    <ImageView
+                        android:id="@+id/arrowVolumeLeft"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:rotation="270"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.2"
+                        app:layout_constraintHorizontal_bias="0.4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <ImageView
+                        android:id="@+id/arrowVolumeRight"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:rotation="90"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.2"
+                        app:layout_constraintHorizontal_bias="0.6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <ImageView
+                        android:id="@+id/arrowChannelLeft"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:rotation="270"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.2"
+                        app:layout_constraintHorizontal_bias="0.75"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <ImageView
+                        android:id="@+id/arrowChannelRight"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:rotation="90"
+                        android:src="@android:drawable/arrow_up_float"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="0.2"
+                        app:layout_constraintHorizontal_bias="0.95"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.5"
+                        app:layout_constraintWidth_percent="0.1" />
+
 
                     <Button
                         android:id="@+id/button_4720_channel"
