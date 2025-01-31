@@ -155,13 +155,16 @@ public class buttonManager4720 {
                 case 144: //vol 4
                     volumeControl.setVolumeToPresetLevel(4);
                     actionChangeVolumeListen();
+                    volumeControl.stopStatic();
                     break;
                 case 180: //vol 5 *
                     // ADD STATIC
+                    volumeControl.playStatic();
                     actionChangeVolumeListen();
                     break;
                 case 216: // PR
                     mode4720 = "EDIT_PR";
+                    volumeControl.stopStatic();
                     firebaseHelper.stopListeningForAudioMessages();
                     break;
                 case 252: // PTR

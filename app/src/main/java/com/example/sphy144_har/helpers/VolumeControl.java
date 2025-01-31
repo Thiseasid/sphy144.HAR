@@ -1,15 +1,18 @@
 package com.example.sphy144_har.helpers;
 
-import android.app.Activity;
 import android.content.Context;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
-import android.os.Build;
+import android.media.MediaPlayer;
+
+import com.example.sphy144_har.R;
 
 public class VolumeControl {
-    private AudioManager audioManager;
+    private final AudioManager audioManager;
+    private MediaPlayer mediaPlayer;
+    private final Context context;
 
     public VolumeControl(Context context){
+        this.context = context;
         audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
     }
 
@@ -22,6 +25,24 @@ public class VolumeControl {
             }
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, finalVol, AudioManager.FLAG_SHOW_UI);
 
+        }
+    }
+
+    public void playStatic(){
+        if (mediaPlayer == null){
+            mediaPlayer = MediaPlayer.create(context, R.raw.static_sound);
+            mediaPlayer.setLooping(true);
+        }
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start(); // Start the sound
+        }
+    }
+
+    public void stopStatic(){
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null; // Reset MediaPlayer
         }
     }
 
