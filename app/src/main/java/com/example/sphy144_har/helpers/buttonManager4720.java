@@ -3,9 +3,7 @@ package com.example.sphy144_har.helpers;
 import static android.content.Context.AUDIO_SERVICE;
 
 import android.app.Activity;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,9 +20,10 @@ import com.example.sphy144_har.R;
 
 public class buttonManager4720 {
 
-    private AudioManager audioManager;
+    private VolumeControl volumeControl;
     private final Activity activity;
     private FirebaseHelper firebaseHelper;
+    private Handler handler = new Handler();
     private String mode4720 = "LISTEN";
     private int channel = 0;
     private int channelToSave = 0;
@@ -38,7 +37,7 @@ public class buttonManager4720 {
     public buttonManager4720(Activity activity,FirebaseHelper firebaseHelper) {
         this.activity = activity;
         this.firebaseHelper = firebaseHelper;
-        this.audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
+        this.volumeControl = new VolumeControl(activity);
     }
 
     public void setupButtons() {
@@ -147,19 +146,19 @@ public class buttonManager4720 {
                     activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
                     activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
                     firebaseHelper.stopListeningForAudioMessages();
-                    setVolumeToPresetLevel(0);
+                    volumeControl.setVolumeToPresetLevel(0);
                     break;
                 case 36: //vol 1
-                    setVolumeToPresetLevel(1);
+                    volumeControl.setVolumeToPresetLevel(1);
                 case 72: //vol 2
-                    setVolumeToPresetLevel(2);
+                    volumeControl.setVolumeToPresetLevel(2);
                 case 108: //vol 3
-                    setVolumeToPresetLevel(3);
+                    volumeControl.setVolumeToPresetLevel(3);
                 case 144: //vol 4
-                    setVolumeToPresetLevel(4);
+                    volumeControl.setVolumeToPresetLevel(4);
                 case 180: //vol 5 *
                     mode4720 = "LISTEN";
-                    firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+                    firebaseHelper.listenForAudioMessages();
                     activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
                     activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
                     activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
@@ -171,13 +170,14 @@ public class buttonManager4720 {
                 case 252: // PTR
                     mode4720 = "EDIT_PTR";
                     firebaseHelper.stopListeningForAudioMessages();
-                    new Handler().postDelayed(() -> {
+                    handler.postDelayed(() -> {
                         activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
-                    }, 5000); // 10,000 milliseconds = 10 seconds
+                    }, 5000);
                     break;
                 case 288: // LIGHT
                     mode4720 = "LISTEN";
-                    firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+                    firebaseHelper.listenForAudioMessages();
+                    handler.removeCallbacksAndMessages(null);
                     activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_light));
                     break;
             }
@@ -212,7 +212,7 @@ public class buttonManager4720 {
             }
             firebaseHelper.setFreqSave(String.valueOf(channelFreqTalk4720[channel]));
             firebaseHelper.setFreqLoad(String.valueOf(channelFreqListen4720[channel]));
-            firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+            firebaseHelper.listenForAudioMessages();
             if (mode4720.equals("LISTEN")) {
                 displayChannel(channel);
             } else {
@@ -303,7 +303,6 @@ public class buttonManager4720 {
         }
     }
 
-
     public void displayDots4720() {
         activity.findViewById(R.id.textView_4720_dots).setVisibility(View.VISIBLE);
     }
@@ -346,36 +345,6 @@ public class buttonManager4720 {
         }
     }
 
-    public void setVolumeToPresetLevel(int level){
-        if(!audioManager.isVolumeFixed()) {
-            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); //15
-        int finalVol = (int) (1.0/4*level *maxVolume);
-        if (finalVol > maxVolume) {
-            finalVol = maxVolume; // Ensure we don't exceed the max
-        }
-
-            // Request audio focus before changing volume
-            int result;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                AudioFocusRequest audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                        .setAudioAttributes(
-                                new android.media.AudioAttributes.Builder()
-                                        .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
-                                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
-                                        .build()
-                        ).build();
-                result = audioManager.requestAudioFocus(audioFocusRequest);
-            } else {
-                result = audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-            }
-
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                audioManager.adjustVolume(AudioManager.STREAM_MUSIC, finalVol);
-            }
-
-        }
-    }
-
     public void arrowFade(ImageView arrow) {
         final Animation fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in);
         final Animation fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out);
@@ -388,5 +357,4 @@ public class buttonManager4720 {
             }
         }, 500); // Hide after fade-out duration (500ms)
     }
-
 }

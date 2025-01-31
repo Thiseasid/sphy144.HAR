@@ -163,7 +163,8 @@ public class FirebaseHelper {
     }
 
     // Listen for new messages and play them
-    public void listenForAudioMessages(String userId) {
+    public void listenForAudioMessages() {
+        String userId = getUserId();
         stopListeningForAudioMessages();
         DatabaseReference userMessagesRef = database.child("messages").child(freqLoad);
         //buttonManagerGlobal.showVariableValue(activity,"Started",freqLoad); //DEBUG

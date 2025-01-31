@@ -39,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
+
+        // Request MODIFY_AUDIO permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.MODIFY_AUDIO_SETTINGS}, 1);
+        }
     }
     @Override
     protected void onDestroy() {
