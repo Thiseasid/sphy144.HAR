@@ -49,9 +49,6 @@ public class Simulation_4720 extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (firebaseHelper != null) {
-            firebaseHelper.removeAudioListener();
-        }
         MediaRecorder mediaRecorder = firebaseHelper.getMediaRecorder();
         if (mediaRecorder != null) {
             mediaRecorder.stop();

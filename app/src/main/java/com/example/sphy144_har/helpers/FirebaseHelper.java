@@ -6,13 +6,18 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
 import java.io.File;
@@ -30,14 +35,12 @@ public class FirebaseHelper {
     // ____________________________ Variables ____________________________
     private FirebaseAuth mAuth;
     private DatabaseReference database;
-    private ValueEventListener audioListener;
+    private ChildEventListener audioListener;
     private String audioFilePath;
     private MediaRecorder mediaRecorder;
     private long minPressTime = 500;
     private long startTime = 0;
     private String radioType;
-    private String freqSave = "30000";
-    private String freqLoad = "30000";
     private Queue<DatabaseReference> toDeleteMessages = new LinkedList<>();
     private final Activity activity;
 
@@ -65,35 +68,24 @@ public class FirebaseHelper {
         return mediaRecorder;
     }
 
-    public String getFreqSave() {
-        return freqSave;
+    public ChildEventListener getAudioListener(){
+        return audioListener;
     }
 
-    ;
-
-    public String getFreqLoad() {
-        return freqLoad;
-    }
-
-    ;
-
-    // ____________________________ Getters ____________________________
-    public void setFreqSave(String freqSave) {
-        this.freqSave = freqSave;
-    }
-
-    public void setFreqLoad(String freqLoad) {
-        this.freqLoad = freqLoad;
+    public void setAudioListener(ChildEventListener listener){
+        audioListener = listener;
     }
 
     // ____________________________ Connect to Firebase ____________________________
     public void signInAnonymously() {
+        Button button = activity.findViewById(R.id.button_4720_ConnectionStatus);
         mAuth.signInAnonymously().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                activity.findViewById(R.id.button_4720_ConnectionStatus).setBackgroundColor(Color.parseColor("#4CAF50"));
+                button.setBackgroundColor(Color.parseColor("#4CAF50"));
             } else {
-                activity.findViewById(R.id.button_4720_ConnectionStatus).setBackgroundColor(Color.RED);
-                buttonManagerGlobal.showVariableValue(activity, "WARN", "Connection to Database Failed");
+                button.setBackgroundColor(Color.RED);
+                button.setText("Status: No Connection");
+                Log.e("FirebaseAuth", "signInAnonymously: Failed!", task.getException());
             }
         });
     }
@@ -112,12 +104,13 @@ public class FirebaseHelper {
             mediaRecorder.start();
         } catch (IOException e) {
             Toast.makeText(activity, "Error!\nStarting recording", Toast.LENGTH_SHORT).show();
+            Log.e("Simulation_4720", "Error: " + e.getMessage());
         }
 
     }
 
     // Stop recording and send the audio as Base64 to Firebase
-    public void stopRecordingAndSend() {
+    public void stopRecordingAndSend(String freqSave) {
         long pressDuration = System.currentTimeMillis() - startTime;
         if (mediaRecorder != null) {
             if (pressDuration >= minPressTime) {
@@ -127,14 +120,16 @@ public class FirebaseHelper {
                     mediaRecorder = null;
                 } catch (RuntimeException e) {
                     Toast.makeText(activity, "Error!\nStopping Recording", Toast.LENGTH_SHORT).show();
+                    Log.e("Simulation_4720", "Error: " + e.getMessage());
                 }
                 try {
                     // Convert the audio file to Base64
                     String base64Audio = convertAudioToBase64(audioFilePath);
                     String userId = getUserId(); // Get the Firebase user ID
-                    sendAudioMessage(userId, base64Audio);  // Send to Firebase
+                    sendAudioMessage(userId, freqSave, base64Audio);  // Send to Firebase
                 } catch (IOException e) {
                     Toast.makeText(activity, "Error!\nEncoding audio", Toast.LENGTH_SHORT).show();
+                    Log.e("Simulation_4720", "Error: " + e.getMessage());
                 }
             } else {
                 mediaRecorder.release();
@@ -154,7 +149,7 @@ public class FirebaseHelper {
     }
 
     // Send an audio message as Base64 encoded string
-    public void sendAudioMessage(String userId, String base64Audio) {
+    public void sendAudioMessage(String userId,String freqSave , String base64Audio) {
         String messageId = database.child("messages").child(freqSave).push().getKey();
         DatabaseReference message = database.child("messages").child(freqSave).child(messageId);
         if (messageId != null) {
@@ -164,59 +159,57 @@ public class FirebaseHelper {
             audioMessageData.put("downloads", 0);
             audioMessageData.put("radio", radioType);
             Map<String, Boolean> clients = new HashMap<>();
-            clients.put(userId, false); // DEBUG FOR SINGLE PHONE TESTING
+            clients.put(userId, true); // DEBUG FOR SINGLE PHONE TESTING
             audioMessageData.put("clients", clients);
-
             message.setValue(audioMessageData)
                     .addOnCompleteListener(task -> {
                         // Data added successfully, now schedule deletion
                         toDeleteMessages.add(message);
                         new Handler().postDelayed(() -> {
                             message.removeValue();
-                        }, 10000); // 10,000 milliseconds = 10 seconds
+                        }, 20000); // 10,000 milliseconds = 10 seconds
                         toDeleteMessages.poll();
                     });
         }
     }
 
     // Listen for new messages and play them
-    public void listenForAudioMessages() {
+    public void listenForAudioMessages(String freqLoad) {
+        stopListeningForAudioMessages(freqLoad);
         String userId = getUserId();
-        stopListeningForAudioMessages();
         DatabaseReference userMessagesRef = database.child("messages").child(freqLoad);
-        //buttonManagerGlobal.showVariableValue(activity,"Started",freqLoad); //DEBUG
-        audioListener = new ValueEventListener() {
+        audioListener = new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
-                    String messageId = messageSnapshot.getKey();
-                    String base64Audio = messageSnapshot.child("audio").getValue(String.class);
-                    Map<String, Boolean> clients = (Map<String, Boolean>) messageSnapshot.child("clients").getValue();
-                    if (clients == null) {
-                        clients = new HashMap<>();
-                    }
+            public void onChildAdded(DataSnapshot messageSnapshot, String previousChildName) {
+                String messageId = messageSnapshot.getKey();
+                Log.d("MessageId", messageId);
+                String base64Audio = messageSnapshot.child("audio").getValue(String.class);
+                Map<String, Boolean> clients = (Map<String, Boolean>) messageSnapshot.child("clients").getValue();
+                if(base64Audio != null){
                     if (!clients.containsKey(userId)) {
-                        database.child("messages").child(freqLoad).child(messageId).child("clients").child(userId).setValue(false);
-                    }
-                    if (base64Audio != null && !Boolean.TRUE.equals(clients.get(userId))) {
-                        updateDownloadCount(userId, messageId);
                         clients.put(userId, true);
                         database.child("messages").child(freqLoad).child(messageId).child("clients").setValue(clients);
+                        updateDownloadCount(freqLoad, messageId);
+                        playReceivedAudio(base64Audio);
+                    }else if (!clients.get(userId)) {
+                        clients.put(userId, true);
+                        database.child("messages").child(freqLoad).child(messageId).child("clients").setValue(clients);
+                        updateDownloadCount(freqLoad, messageId);
                         playReceivedAudio(base64Audio);
                     }
                 }
             }
-
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
             @Override
             public void onCancelled(DatabaseError error) {
                 Toast.makeText(activity, "Error!\nListening Firebase", Toast.LENGTH_SHORT).show();
-            }
-        };
-        // Attach the listener
-        if (audioListener != null) {
-            userMessagesRef.removeEventListener(audioListener);
-        }
-        userMessagesRef.addValueEventListener(audioListener);
+            }};
+        userMessagesRef.addChildEventListener(audioListener);
     }
 
     // Convert Base64 to audio file and play it
@@ -237,16 +230,17 @@ public class FirebaseHelper {
 
             mediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
-//                audioFile.delete(); //Leave last audio in place
+                audioFile.delete();
             });
 
         } catch (IOException e) {
             Toast.makeText(activity, "Error!\nPlaying audio", Toast.LENGTH_SHORT).show();
+            Log.e("Simulation_4720", "Error: " + e.getMessage());
         }
     }
 
     // Update downloads for Debugging
-    private void updateDownloadCount(String userId, String messageId) {
+    private void updateDownloadCount(String freqSave, String messageId) {
         DatabaseReference messageRef = database.child("messages").child(freqSave).child(messageId);
 
         messageRef.child("downloads").get().addOnCompleteListener(task -> {
@@ -260,16 +254,7 @@ public class FirebaseHelper {
         });
     }
 
-    // For OnDestroy Remove all Listeners
-    public void removeAudioListener() {
-        DatabaseReference userMessagesRef = database.child("messages").child(freqSave);
-        if (audioListener != null) {
-            userMessagesRef.removeEventListener(audioListener);
-            audioListener = null;
-        }
-    }
-
-    public void stopListeningForAudioMessages() {
+    public void stopListeningForAudioMessages(String freqLoad) {
         if (audioListener != null) {
             database.child("messages").child(freqLoad).removeEventListener(audioListener);
             audioListener = null;

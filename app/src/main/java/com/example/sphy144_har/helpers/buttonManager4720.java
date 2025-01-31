@@ -1,5 +1,7 @@
 package com.example.sphy144_har.helpers;
 
+import static com.example.sphy144_har.helpers.buttonManagerGlobal.*;
+
 import android.app.Activity;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -26,8 +28,8 @@ public class buttonManager4720 {
     private int channelToSave = 0;
     private boolean flagEditPTT = false;
     private boolean flagEditChannel = false;
-    private int[] channelFreqListen4720 = {30000, 33125, 35975, 43025, 47050, 55000, 63500, 78100, 81625, 87975};
-    private int[] channelFreqTalk4720 = {30000, 33125, 35975, 43025, 47050, 55000, 63500, 80000, 45000, 65000};
+    private int[] channelFreqListen4720 = {30000, 33125, 35975, 43025, 47050, 55000, 63500, 70000, 80000, 87975};
+    private int[] channelFreqTalk4720 = {30000, 33125, 35975, 43025, 47050, 55000, 63500, 80000, 70000, 65000};
     private char[] digits = {' ', ' ', ' ', ' ', ' '};
     private int currentPosition = 0;
 
@@ -47,7 +49,7 @@ public class buttonManager4720 {
         Button button_4720_preset = activity.findViewById(R.id.button_4720_preset);
         button_4720_preset.setOnClickListener(v -> handleButton_4720_preset_Click());
         Button button_4720_main_menu = activity.findViewById(R.id.button_4720_main_menu);
-        button_4720_main_menu.setOnClickListener(v -> buttonManagerGlobal.handleButton_mainMenu_Click(activity));
+        button_4720_main_menu.setOnClickListener(v -> handleButton_mainMenu_Click(activity));
 
         // Rotation Buttons
         Button button_4720_volume = activity.findViewById(R.id.button_4720_volume);
@@ -86,16 +88,17 @@ public class buttonManager4720 {
     public void handleButton_4720_ConnectionStatus_Click() {
         //ADD RESERVERD FUNCTION
         if (mode4720.equals("LISTEN")) {
-            Toast.makeText(activity, "Listening : "+firebaseHelper.getFreqLoad(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Connection is Established.", Toast.LENGTH_SHORT).show();
         } else{
             Toast.makeText(activity, "Edit Mode", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void handleButton_4720_preset_Click(){
-        channelFreqListen4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 78100, 81625, 87975};
-        channelFreqTalk4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 80000, 45000, 65000};
-        firebaseHelper.stopListeningForAudioMessages();
+        firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
+        channelFreqListen4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 70000, 80000, 87975};
+        channelFreqTalk4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 80000, 70000, 65000};
+
         displayFreqListen4720();
     }
 
@@ -105,7 +108,7 @@ public class buttonManager4720 {
             channelFreqListen4720[i] = 0;
             channelFreqTalk4720[i] = 0;
         }
-        firebaseHelper.stopListeningForAudioMessages();
+        firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
         displayFreqListen4720();
     }
 
@@ -119,7 +122,7 @@ public class buttonManager4720 {
                 if (rotation == 0) {
                     return;
                 }else{
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36, 0, 288);
+                    handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36, 0, 288);
                     arrowFade(activity.findViewById(R.id.arrowVolumeLeft));
                 }
 
@@ -127,7 +130,7 @@ public class buttonManager4720 {
                 if (rotation == 288) {
                     return;
                 }else{
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36, 288, 0);
+                    handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36, 288, 0);
                     arrowFade(activity.findViewById(R.id.arrowVolumeRight));
                 }
             }
@@ -136,47 +139,47 @@ public class buttonManager4720 {
                     mode4720 = "OFF";
                     undisplayScreen4720();
                     activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
-                    firebaseHelper.stopListeningForAudioMessages();
+                    firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
                     volumeControl.setVolumeToPresetLevel(0);
                     break;
                 case 36: //vol 1
                     activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
                     volumeControl.setVolumeToPresetLevel(1);
-                    actionChangeVolumeListen();
+                    mode4720 = "LISTEN";
+                    firebaseHelper.listenForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
+                    displayScreen4720();
                     break;
                 case 72: //vol 2
                     volumeControl.setVolumeToPresetLevel(2);
-                    actionChangeVolumeListen();
                     break;
                 case 108: //vol 3
                     volumeControl.setVolumeToPresetLevel(3);
-                    actionChangeVolumeListen();
                     break;
                 case 144: //vol 4
                     volumeControl.setVolumeToPresetLevel(4);
-                    actionChangeVolumeListen();
                     volumeControl.stopStatic();
                     break;
                 case 180: //vol 5 *
+                    mode4720 = "LISTEN";
                     // ADD STATIC
                     volumeControl.playStatic();
-                    actionChangeVolumeListen();
+                    firebaseHelper.listenForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
                     break;
                 case 216: // PR
                     mode4720 = "EDIT_PR";
                     volumeControl.stopStatic();
-                    firebaseHelper.stopListeningForAudioMessages();
+                    firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
                     break;
                 case 252: // PTR
                     mode4720 = "EDIT_PTR";
-                    firebaseHelper.stopListeningForAudioMessages();
+                    firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
                     handler.postDelayed(() -> {
                         activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
                     }, 5000);
                     break;
                 case 288: // LIGHT
                     mode4720 = "LISTEN";
-                    firebaseHelper.listenForAudioMessages();
+                    firebaseHelper.listenForAudioMessages(String.valueOf(channelFreqTalk4720[channel]));
                     handler.removeCallbacksAndMessages(null);
                     activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_light));
                     break;
@@ -188,16 +191,16 @@ public class buttonManager4720 {
     }
 
     public void handleButton_4720_channel_Click(View v, MotionEvent event) {
+        firebaseHelper.stopListeningForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
         float x = event.getX();
         float width = v.getWidth();
         float rotation = activity.findViewById(R.id.imageButton_4720_channel).getRotation();
-
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (x < width / 2) {
                 if (rotation == 36) {
                     return;
                 }else{
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36, 0, 324);
+                    handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36, 0, 324);
                     channel -= 1;
                     arrowFade(activity.findViewById(R.id.arrowChannelLeft));
                 }
@@ -205,15 +208,14 @@ public class buttonManager4720 {
                 if (rotation == 0) {
                     return;
                 }else{
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36, 324, 0);
+                    handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36, 324, 0);
                     channel += 1;
                     arrowFade(activity.findViewById(R.id.arrowChannelRight));
                 }
             }
-            firebaseHelper.setFreqSave(String.valueOf(channelFreqTalk4720[channel]));
-            firebaseHelper.setFreqLoad(String.valueOf(channelFreqListen4720[channel]));
-            firebaseHelper.listenForAudioMessages();
+
             if (mode4720.equals("LISTEN")) {
+                firebaseHelper.listenForAudioMessages(String.valueOf(channelFreqListen4720[channel]));
                 displayChannel(channel);
             } else {
                 if (!flagEditPTT) {
@@ -233,7 +235,7 @@ public class buttonManager4720 {
     }
 
     // ____________________________ PTT Button ____________________________
-    public void handleButton_ptt_Click() { // To add PTT VOICE ON CLICK
+    public void handleButton_ptt_Click() {
         if (mode4720.equals("LISTEN")) {
             displayFreqTalk4720();
             displayDots4720();
@@ -261,7 +263,7 @@ public class buttonManager4720 {
                         displayFreqListen4720();
                     } else {
                         Toast.makeText(activity, "Λάθος Εισαγωγή!\nΣυχνότητα από 30.000 έως 87.975!", Toast.LENGTH_SHORT).show();
-                        buttonManagerGlobal.showVariableValue(activity, "Λάθος Εισαγωγή", "Ο ασύρματος λειτουργεί από τη συχνότητα 30.000 έως 87.975");
+                        showVariableValue(activity, "Λάθος Εισαγωγή", "Ο ασύρματος λειτουργεί από τη συχνότητα 30.000 έως 87.975");
                         resetEdit();
                     }
                 }
@@ -274,8 +276,7 @@ public class buttonManager4720 {
             displayFreqListen4720();
             undisplayDots4720();
             //ADD VOICE FUNCTION
-            firebaseHelper.setFreqSave(String.valueOf(channelFreqTalk4720[channel]));
-            firebaseHelper.stopRecordingAndSend();
+            firebaseHelper.stopRecordingAndSend(String.valueOf(channelFreqTalk4720[channel]));
         }
     }
 
@@ -368,12 +369,6 @@ public class buttonManager4720 {
                 arrow.setVisibility(View.GONE); // Hide the image after fade-out
             }
         }, 500); // Hide after fade-out duration (500ms)
-    }
-
-    public void actionChangeVolumeListen(){
-        mode4720 = "LISTEN";
-        firebaseHelper.listenForAudioMessages();
-        displayScreen4720();
     }
 
 }
