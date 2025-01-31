@@ -1,9 +1,6 @@
 package com.example.sphy144_har.helpers;
 
-import static android.content.Context.AUDIO_SERVICE;
-
 import android.app.Activity;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,10 +17,10 @@ import com.example.sphy144_har.R;
 
 public class buttonManager4720 {
 
-    private VolumeControl volumeControl;
     private final Activity activity;
     private FirebaseHelper firebaseHelper;
     private Handler handler = new Handler();
+    private VolumeControl volumeControl;
     private String mode4720 = "LISTEN";
     private int channel = 0;
     private int channelToSave = 0;
@@ -64,7 +61,7 @@ public class buttonManager4720 {
             return true;
         });
 
-        // Racal Buttons
+        // PTT Button
         Button button_4720_ptt = activity.findViewById(R.id.button_4720_ptt);
         button_4720_ptt.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -113,10 +110,6 @@ public class buttonManager4720 {
     }
 
     // ____________________________ Rotational Buttons ____________________________
-
-
-
-
     public void handleButton_4720_volume_Click(View v, MotionEvent event) {
         float x = event.getX();
         float width = v.getWidth();

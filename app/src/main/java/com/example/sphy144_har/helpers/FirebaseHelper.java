@@ -33,6 +33,8 @@ public class FirebaseHelper {
     private ValueEventListener audioListener;
     private String audioFilePath;
     private MediaRecorder mediaRecorder;
+    private long minPressTime = 500;
+    private long startTime = 0;
     private String radioType;
     private String freqSave = "30000";
     private String freqLoad = "30000";
@@ -55,23 +57,32 @@ public class FirebaseHelper {
         return null;
     }
 
-    public Queue getToDeleteMessages(){
+    public Queue getToDeleteMessages() {
         return toDeleteMessages;
     }
 
-    public MediaRecorder getMediaRecorder(){
+    public MediaRecorder getMediaRecorder() {
         return mediaRecorder;
     }
 
-    public  String getFreqSave(){ return freqSave;};
-    public  String getFreqLoad(){ return freqLoad;};
+    public String getFreqSave() {
+        return freqSave;
+    }
+
+    ;
+
+    public String getFreqLoad() {
+        return freqLoad;
+    }
+
+    ;
 
     // ____________________________ Getters ____________________________
-    public void setFreqSave(String freqSave){
+    public void setFreqSave(String freqSave) {
         this.freqSave = freqSave;
     }
 
-    public void setFreqLoad(String freqLoad){
+    public void setFreqLoad(String freqLoad) {
         this.freqLoad = freqLoad;
     }
 
@@ -82,15 +93,15 @@ public class FirebaseHelper {
                 activity.findViewById(R.id.button_4720_ConnectionStatus).setBackgroundColor(Color.parseColor("#4CAF50"));
             } else {
                 activity.findViewById(R.id.button_4720_ConnectionStatus).setBackgroundColor(Color.RED);
-                buttonManagerGlobal.showVariableValue(activity, "WARN","Connection to Database Failed");
+                buttonManagerGlobal.showVariableValue(activity, "WARN", "Connection to Database Failed");
             }
         });
     }
 
     public void startRecording() {
+        startTime = System.currentTimeMillis();
         try {
             audioFilePath = activity.getExternalFilesDir(null).getAbsolutePath() + "/audio.3gp"; // Set file path
-
             mediaRecorder = new MediaRecorder();
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
@@ -100,28 +111,34 @@ public class FirebaseHelper {
             mediaRecorder.prepare();
             mediaRecorder.start();
         } catch (IOException e) {
-            Toast.makeText(activity, "Error starting recording", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Error!\nStarting recording", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // Stop recording and send the audio as Base64 to Firebase
     public void stopRecordingAndSend() {
+        long pressDuration = System.currentTimeMillis() - startTime;
         if (mediaRecorder != null) {
-            try {
-                mediaRecorder.stop();
+            if (pressDuration >= minPressTime) {
+                try {
+                    mediaRecorder.stop();
+                    mediaRecorder.release();
+                    mediaRecorder = null;
+                } catch (RuntimeException e) {
+                    Toast.makeText(activity, "Error!\nStopping Recording", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    // Convert the audio file to Base64
+                    String base64Audio = convertAudioToBase64(audioFilePath);
+                    String userId = getUserId(); // Get the Firebase user ID
+                    sendAudioMessage(userId, base64Audio);  // Send to Firebase
+                } catch (IOException e) {
+                    Toast.makeText(activity, "Error!\nEncoding audio", Toast.LENGTH_SHORT).show();
+                }
+            } else {
                 mediaRecorder.release();
                 mediaRecorder = null;
-            } catch (RuntimeException e) {
-                Toast.makeText(activity, "Error!\nCould not stop Recording", Toast.LENGTH_SHORT).show();
-            }
-
-            try {
-                // Convert the audio file to Base64
-                String base64Audio = convertAudioToBase64(audioFilePath);
-                String userId = getUserId(); // Get the Firebase user ID
-                sendAudioMessage(userId, base64Audio);  // Send to Firebase
-            } catch (IOException e) {
-                Toast.makeText(activity, "Error!\nEncoding audio to Base64", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -147,7 +164,7 @@ public class FirebaseHelper {
             audioMessageData.put("downloads", 0);
             audioMessageData.put("radio", radioType);
             Map<String, Boolean> clients = new HashMap<>();
-            clients.put(userId,false); // DEBUG FOR SINGLE PHONE TESTING
+            clients.put(userId, false); // DEBUG FOR SINGLE PHONE TESTING
             audioMessageData.put("clients", clients);
 
             message.setValue(audioMessageData)
@@ -178,7 +195,7 @@ public class FirebaseHelper {
                     if (clients == null) {
                         clients = new HashMap<>();
                     }
-                    if(!clients.containsKey(userId)){
+                    if (!clients.containsKey(userId)) {
                         database.child("messages").child(freqLoad).child(messageId).child("clients").child(userId).setValue(false);
                     }
                     if (base64Audio != null && !Boolean.TRUE.equals(clients.get(userId))) {
@@ -192,7 +209,7 @@ public class FirebaseHelper {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(activity, "Error!\n Play audio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Error!\nListening Firebase", Toast.LENGTH_SHORT).show();
             }
         };
         // Attach the listener
@@ -224,7 +241,7 @@ public class FirebaseHelper {
             });
 
         } catch (IOException e) {
-            Toast.makeText(activity, "Error!\nFailed to Play audio", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Error!\nPlaying audio", Toast.LENGTH_SHORT).show();
         }
     }
 
