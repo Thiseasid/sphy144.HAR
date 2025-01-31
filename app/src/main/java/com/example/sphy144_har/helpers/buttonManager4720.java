@@ -134,27 +134,31 @@ public class buttonManager4720 {
             switch ((int) (activity.findViewById(R.id.imageButton_4720_volume).getRotation())) {
                 case 0: //OFF
                     mode4720 = "OFF";
-                    activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
-                    activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
-                    activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
+                    undisplayScreen4720();
                     activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
                     firebaseHelper.stopListeningForAudioMessages();
                     volumeControl.setVolumeToPresetLevel(0);
                     break;
                 case 36: //vol 1
+                    activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
                     volumeControl.setVolumeToPresetLevel(1);
+                    actionChangeVolumeListen();
+                    break;
                 case 72: //vol 2
                     volumeControl.setVolumeToPresetLevel(2);
+                    actionChangeVolumeListen();
+                    break;
                 case 108: //vol 3
                     volumeControl.setVolumeToPresetLevel(3);
+                    actionChangeVolumeListen();
+                    break;
                 case 144: //vol 4
                     volumeControl.setVolumeToPresetLevel(4);
+                    actionChangeVolumeListen();
+                    break;
                 case 180: //vol 5 *
-                    mode4720 = "LISTEN";
-                    firebaseHelper.listenForAudioMessages();
-                    activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
-                    activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
-                    activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
+                    // ADD STATIC
+                    actionChangeVolumeListen();
                     break;
                 case 216: // PR
                     mode4720 = "EDIT_PR";
@@ -304,6 +308,18 @@ public class buttonManager4720 {
         activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
     }
 
+    public void displayScreen4720() {
+        activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.textView_4720_P).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
+    }
+
+    public void undisplayScreen4720() {
+        activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.textView_4720_P).setVisibility(View.INVISIBLE);
+        activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
+    }
 
     public void resetEdit() {
         for (int i = 0; i < 5; i++) {
@@ -350,4 +366,11 @@ public class buttonManager4720 {
             }
         }, 500); // Hide after fade-out duration (500ms)
     }
+
+    public void actionChangeVolumeListen(){
+        mode4720 = "LISTEN";
+        firebaseHelper.listenForAudioMessages();
+        displayScreen4720();
+    }
+
 }
