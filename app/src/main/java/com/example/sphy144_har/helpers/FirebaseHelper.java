@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -94,12 +95,12 @@ public class FirebaseHelper {
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mediaRecorder.setAudioEncodingBitRate(128000);
+            mediaRecorder.setAudioEncodingBitRate(64000);
             mediaRecorder.setOutputFile(audioFilePath);
             mediaRecorder.prepare();
             mediaRecorder.start();
         } catch (IOException e) {
-            buttonManagerGlobal.showVariableValue(activity, "ERROR", "Error starting recording");
+            Toast.makeText(activity, "Error starting recording", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -111,7 +112,7 @@ public class FirebaseHelper {
                 mediaRecorder.release();
                 mediaRecorder = null;
             } catch (RuntimeException e) {
-                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Could not stop Recording");
+                Toast.makeText(activity, "Error!\nCould not stop Recording", Toast.LENGTH_SHORT).show();
             }
 
             try {
@@ -120,7 +121,7 @@ public class FirebaseHelper {
                 String userId = getUserId(); // Get the Firebase user ID
                 sendAudioMessage(userId, base64Audio);  // Send to Firebase
             } catch (IOException e) {
-                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Error encoding audio to Base64");
+                Toast.makeText(activity, "Error!\nEncoding audio to Base64", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -146,7 +147,7 @@ public class FirebaseHelper {
             audioMessageData.put("downloads", 0);
             audioMessageData.put("radio", radioType);
             Map<String, Boolean> clients = new HashMap<>();
-            clients.put(userId,false);
+            clients.put(userId,false); // DEBUG FOR SINGLE PHONE TESTING
             audioMessageData.put("clients", clients);
 
             message.setValue(audioMessageData)
@@ -173,12 +174,13 @@ public class FirebaseHelper {
                     String messageId = messageSnapshot.getKey();
                     String base64Audio = messageSnapshot.child("audio").getValue(String.class);
                     Map<String, Boolean> clients = (Map<String, Boolean>) messageSnapshot.child("clients").getValue();
-
+                    if (clients == null) {
+                        clients = new HashMap<>();
+                    }
                     if(!clients.containsKey(userId)){
                         database.child("messages").child(freqLoad).child(messageId).child("clients").child(userId).setValue(false);
                     }
-                    if (base64Audio != null && clients != null && !clients.get(userId)) {
-
+                    if (base64Audio != null && !Boolean.TRUE.equals(clients.get(userId))) {
                         updateDownloadCount(userId, messageId);
                         clients.put(userId, true);
                         database.child("messages").child(freqLoad).child(messageId).child("clients").setValue(clients);
@@ -189,7 +191,7 @@ public class FirebaseHelper {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                buttonManagerGlobal.showVariableValue(activity, "ERROR", "Listening audio");
+                Toast.makeText(activity, "Error!\n Play audio", Toast.LENGTH_SHORT).show();
             }
         };
         // Attach the listener
@@ -221,7 +223,7 @@ public class FirebaseHelper {
             });
 
         } catch (IOException e) {
-            buttonManagerGlobal.showVariableValue(activity, "ERROR","Failed to Play audio");
+            Toast.makeText(activity, "Error!\nFailed to Play audio", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,10 +1,17 @@
 package com.example.sphy144_har.helpers;
 
+import static android.content.Context.AUDIO_SERVICE;
+
 import android.app.Activity;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
+import android.os.Build;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
@@ -12,6 +19,7 @@ import com.example.sphy144_har.R;
 
 public class buttonManager4720 {
 
+    private AudioManager audioManager;
     private final Activity activity;
     private FirebaseHelper firebaseHelper;
     private String mode4720 = "LISTEN";
@@ -27,6 +35,7 @@ public class buttonManager4720 {
     public buttonManager4720(Activity activity,FirebaseHelper firebaseHelper) {
         this.activity = activity;
         this.firebaseHelper = firebaseHelper;
+        this.audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
     }
 
     public void setupButtons() {
@@ -34,8 +43,11 @@ public class buttonManager4720 {
         // Menu Buttons
         Button button_4720_ConnectionStatus = activity.findViewById(R.id.button_4720_ConnectionStatus);
         button_4720_ConnectionStatus.setOnClickListener(v -> handleButton_4720_ConnectionStatus_Click());
-        Button button_4720_preset = activity.findViewById(R.id.button_4720_clear);
-        button_4720_preset.setOnClickListener(v -> handleButton_4720_clear_Click());
+        Button button_4720_clear = activity.findViewById(R.id.button_4720_clear);
+        button_4720_clear.setOnClickListener(v -> handleButton_4720_clear_Click());
+        Button button_4720_preset = activity.findViewById(R.id.button_4720_preset);
+        button_4720_preset.setOnClickListener(v -> handleButton_4720_preset_Click());
+
         Button button_4720_main_menu = activity.findViewById(R.id.button_4720_main_menu);
         button_4720_main_menu.setOnClickListener(v -> buttonManagerGlobal.handleButton_mainMenu_Click(activity));
 
@@ -58,9 +70,11 @@ public class buttonManager4720 {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_button));
                         handleButton_ptt_Click();
                         return true;
                     case MotionEvent.ACTION_UP:
+                        activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
                         handleButton_ptt_Release();
                         return true;
                     default:
@@ -73,9 +87,9 @@ public class buttonManager4720 {
     public void handleButton_4720_ConnectionStatus_Click() {
         //ADD RESERVERD FUNCTION
         if (mode4720.equals("LISTEN")) {
-            buttonManagerGlobal.showVariableValue(activity,"Listening",firebaseHelper.getFreqLoad());
+            Toast.makeText(activity, "Listening : "+firebaseHelper.getFreqLoad(), Toast.LENGTH_SHORT).show();
         } else{
-            buttonManagerGlobal.showVariableValue(activity,"Listening","Currently in Edit Mode");
+            Toast.makeText(activity, "Edit Mode", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -87,6 +101,13 @@ public class buttonManager4720 {
             channelFreqListen4720[i] = 0;
             channelFreqTalk4720[i] = 0;
         }
+        firebaseHelper.stopListeningForAudioMessages();
+        displayFreqListen4720();
+    }
+
+    public void handleButton_4720_preset_Click(){
+        channelFreqListen4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 78100, 81625, 87975};
+        channelFreqTalk4720 = new int[] {30000, 33125, 35975, 43025, 47050, 55000, 63500, 80000, 45000, 65000};
         firebaseHelper.stopListeningForAudioMessages();
         displayFreqListen4720();
     }
@@ -118,6 +139,7 @@ public class buttonManager4720 {
                         }
                         displayFreqListen4720();
                     } else {
+                        Toast.makeText(activity, "Λάθος Εισαγωγή!\nΣυχνότητα από 30.000 έως 87.975!", Toast.LENGTH_SHORT).show();
                         buttonManagerGlobal.showVariableValue(activity, "Λάθος Εισαγωγή", "Ο ασύρματος λειτουργεί από τη συχνότητα 30.000 έως 87.975");
                         resetEdit();
                     }
@@ -142,55 +164,65 @@ public class buttonManager4720 {
         float rotation = activity.findViewById(R.id.imageButton_4720_volume).getRotation();
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (x < width / 2) {
-                if (rotation != 0) {
+                if (rotation == 0) {
+                    return;
+                }else{
                     buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), -36, 0, 288);
                 }
 
             } else {
-                if (rotation != 288) {
+                if (rotation == 288) {
+                    return;
+                }else{
                     buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_volume), 36, 288, 0);
                 }
             }
+            switch ((int) (activity.findViewById(R.id.imageButton_4720_volume).getRotation())) {
+                case 0: //OFF
+                    mode4720 = "OFF";
+                    activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
+                    activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
+                    activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
+                    activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
+                    firebaseHelper.stopListeningForAudioMessages();
+                    setVolumeToPresetLevel(0);
+                    break;
+                case 36: //vol 1
+                    setVolumeToPresetLevel(1);
+                case 72: //vol 2
+                    setVolumeToPresetLevel(2);
+                case 108: //vol 3
+                    setVolumeToPresetLevel(3);
+                case 144: //vol 4
+                    setVolumeToPresetLevel(4);
+                case 180: //vol 5 *
+                    mode4720 = "LISTEN";
+                    firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+                    activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
+                    activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
+                    activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
+                    break;
+                case 216: // PR
+                    mode4720 = "EDIT_PR";
+                    firebaseHelper.stopListeningForAudioMessages();
+                    break;
+                case 252: // PTR
+                    mode4720 = "EDIT_PTR";
+                    firebaseHelper.stopListeningForAudioMessages();
+                    new Handler().postDelayed(() -> {
+                        activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
+                    }, 5000); // 10,000 milliseconds = 10 seconds
+                    break;
+                case 288: // LIGHT
+                    mode4720 = "LISTEN";
+                    firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
+                    activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_light));
+                    break;
+            }
+            resetEdit();
+            displayFreqListen4720();
+            displayChannel(channel);
         }
-
-        switch ((int) (rotation)) {
-            case 0: //OFF
-                activity.findViewById(R.id.textView_4720_freq).setVisibility(View.INVISIBLE);
-                activity.findViewById(R.id.textView_4720_channel).setVisibility(View.INVISIBLE);
-                activity.findViewById(R.id.textView_4720_dots).setVisibility(View.INVISIBLE);
-                activity.findViewById(R.id.button_4720_ptt).setEnabled(false);
-                firebaseHelper.stopListeningForAudioMessages();
-                break;
-            case 36: //vol 1
-            case 72: //vol 2
-            case 108: //vol 3
-            case 144: //vol 4
-            case 180: //vol 5 *
-                mode4720 = "LISTEN";
-                firebaseHelper.stopListeningForAudioMessages();
-                firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
-                activity.findViewById(R.id.button_4720_ptt).setEnabled(true);
-                activity.findViewById(R.id.textView_4720_freq).setVisibility(View.VISIBLE);
-                activity.findViewById(R.id.textView_4720_channel).setVisibility(View.VISIBLE);
-                break;
-            case 216: // PR
-                mode4720 = "EDIT_PR";
-                firebaseHelper.stopListeningForAudioMessages();
-                break;
-            case 252: // PTR
-                mode4720 = "EDIT_PTR";
-                firebaseHelper.stopListeningForAudioMessages();
-                activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b));
-                break;
-            case 288: // LIGHT
-                mode4720 = "LISTEN";
-                firebaseHelper.listenForAudioMessages(firebaseHelper.getUserId());
-                activity.findViewById(R.id.layout_4720_frame_background).setBackground(ContextCompat.getDrawable(activity, R.drawable.racal_prm4720b_light));
-                break;
-        }
-        resetEdit();
-        displayFreqListen4720();
-        displayChannel(channel);
     }
 
     public void displayChannel(int channel) {
@@ -238,15 +270,21 @@ public class buttonManager4720 {
     public void handleButton_4720_channel_Click(View v, MotionEvent event) {
         float x = event.getX();
         float width = v.getWidth();
+        float rotation = activity.findViewById(R.id.imageButton_4720_channel).getRotation();
+
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (x < width / 2) {
-                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() != 36) {
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36, 0, 325);
+                if (rotation == 36) {
+                    return;
+                }else{
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), -36, 0, 324);
                     channel -= 1;
                 }
             } else {
-                if (activity.findViewById(R.id.imageButton_4720_channel).getRotation() != 0) {
-                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36, 325, 0);
+                if (rotation == 0) {
+                    return;
+                }else{
+                    buttonManagerGlobal.handleButton_rotation(activity, activity.findViewById(R.id.imageButton_4720_channel), 36, 324, 0);
                     channel += 1;
                 }
             }
@@ -295,4 +333,35 @@ public class buttonManager4720 {
                 break;
         }
     }
+
+    public void setVolumeToPresetLevel(int level){
+        if(!audioManager.isVolumeFixed()) {
+            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); //15
+        int finalVol = (int) (1.0/4*level *maxVolume);
+        if (finalVol > maxVolume) {
+            finalVol = maxVolume; // Ensure we don't exceed the max
+        }
+
+            // Request audio focus before changing volume
+            int result;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                AudioFocusRequest audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                        .setAudioAttributes(
+                                new android.media.AudioAttributes.Builder()
+                                        .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
+                                        .build()
+                        ).build();
+                result = audioManager.requestAudioFocus(audioFocusRequest);
+            } else {
+                result = audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            }
+
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                audioManager.adjustVolume(AudioManager.STREAM_MUSIC, finalVol);
+            }
+
+        }
+    }
+
 }

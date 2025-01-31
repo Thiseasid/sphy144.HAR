@@ -25,12 +25,10 @@ public class Simulation_4720 extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_simulation4720);
 
-
         firebaseHelper = new FirebaseHelper(this,"4720");
-        firebaseHelper.signInAnonymously();  // Sign in anonymously
         buttonManager4720 buttonManager = new buttonManager4720(this,firebaseHelper);
         buttonManager.setupButtons();
-
+        firebaseHelper.signInAnonymously();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
